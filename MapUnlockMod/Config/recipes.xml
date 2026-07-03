@@ -1,0 +1,11 @@
+<configs>
+    <append xpath="/recipes">
+        <recipe name="mapUnlockSurvivorMap" count="1" craft_time="60" craft_exp_gain="100" craft_area="workbench" tags="workbenchCrafting">
+            <ingredient name="resourcePaper" count="100"/>
+            <ingredient name="modDyeRed" count="1"/>
+            <ingredient name="modDyeGreen" count="1"/>
+            <ingredient name="modDyeBlue" count="1"/>
+            <ingredient name="modDyeBlack" count="1"/>
+        </recipe>
+    </append>
+</configs>

@@ -16,7 +16,14 @@ make a mod to make wildspawns gs based, walkersim compatible.
     - option to increase spawns
     - add all zombie types to any biome spawngroup
 
+Craftable Map. find a piece of a map in loot, unlocks that area (city/biome)
+
+New magazine series for mod qualities
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Health Regen affix is broken.
+Empty affix slots on weapons (maybe due to combining), empty slots removed after combining again.
 
 Binding token
     - Puts an extracted affix into the affixes slots instead of a normal mod slot

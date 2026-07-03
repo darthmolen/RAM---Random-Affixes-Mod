@@ -1,0 +1,19 @@
+<configs>
+    <insertBefore xpath="/items/item[@name='casinoCoin']">
+        <item name="mapUnlockSurvivorMap">
+            <property name="Extends" value="schematicMaster"/>
+            <property name="CustomIcon" value="mapUnlockSurvivorMap"/>
+            <property name="DescriptionKey" value="mapUnlockSurvivorMapDesc"/>
+            <property name="Unlocks" value="mapUnlockEnabled"/>
+            <property name="Stacknumber" value="20"/>
+            <property name="SoundPickup" value="book_grab"/>
+            <property name="SoundPlace" value="book_place"/>
+            <property name="EconomicValue" value="5000"/>
+            <property name="SellableToTrader" value="false"/>
+            <effect_group name="Unlock personal map" tiered="false">
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="mapUnlockEnabled" operation="set" value="1"/>
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="ShowToolbeltMessage" message_key="ttMapUnlockSurvivorMapUnlocked"/>
+            </effect_group>
+        </item>
+    </insertBefore>
+</configs>

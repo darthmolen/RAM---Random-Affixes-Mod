@@ -1,0 +1,5 @@
+<configs>
+    <append xpath="/traders/trader_item_groups/trader_item_group[@name='commonBooks']">
+        <item name="mapUnlockSurvivorMap" count="1" prob="20"/>
+    </append>
+</configs>

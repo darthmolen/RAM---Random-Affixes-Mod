@@ -45,6 +45,74 @@
     </append>
 
     <append xpath="/windows">
+        <window name="windowRamAffixDetails" width="397" height="688" panel="Left" cursor_area="true" controller="WeaponAffixesProject.XUiC_RamAffixDetails,WeaponAffixesProject">
+            <rect name="header" height="43" depth="1">
+                <headerbg/>
+                <sprite depth="2" name="windowIcon" style="icon32px" pos="4,-5" sprite="ui_affixes_icon"/>
+                <label style="header.name" text="AFFIX DETAIL" text_key="xuiRamAffixDetail"/>
+            </rect>
+
+            <rect name="content" pos="0,-43" height="650" depth="1">
+                <sprite name="backgroundMain" sprite="menu_empty3px" pos="0,0" width="397" height="650" color="[black]" type="sliced" fillcenter="false"/>
+                <sprite color="[darkGrey]" type="sliced"/>
+
+                <rect name="empty" pos="3,-3" width="391" height="644" visible="{ramdetailnoaffix}">
+                    <label pos="195,-310" width="350" height="80" pivot="center" justify="center" font_size="28" color="[mediumGrey]" text_key="xuiRamSelectAffix"/>
+                </rect>
+
+                <rect name="detail" pos="3,-3" width="391" height="644" visible="{ramdetailhasaffix}">
+                    <rect name="preview" pos="0,0" width="147" height="147">
+                        <sprite depth="8" name="backgroundMain" sprite="menu_empty3px" width="147" height="147" color="[black]" type="sliced" fillcenter="false"/>
+                        <sprite depth="1" color="[mediumGrey]" type="sliced"/>
+                        <sprite depth="7" name="itemPreview" width="112" height="112" atlas="ItemIconAtlas" sprite="{ramdetailicon}" color="{ramdetailicontint}" pos="74,-74" pivot="center" foregroundlayer="true"/>
+                    </rect>
+
+                    <label depth="3" name="name" pos="160,-10" width="220" height="80" font_size="30" color="[white]" text="{ramdetailname}" justify="left"/>
+                    <label depth="3" name="tier" pos="160,-86" width="220" height="32" font_size="26" color="[selectedColor]" text="{ramdetailtier}" justify="left"/>
+
+                    <rect name="descriptionPanel" pos="0,-160" width="391" height="260">
+                        <sprite depth="8" name="backgroundMain" sprite="menu_empty3px" width="391" height="260" color="[black]" type="sliced" fillcenter="false"/>
+                        <sprite depth="1" color="[mediumGrey]" type="sliced"/>
+                        <label depth="3" name="description" pos="10,-10" width="370" height="240" font_size="26" color="[white]" text="{ramdetaildescription}" justify="left" parse_actions="true"/>
+                    </rect>
+
+                    <rect name="futurePanel" pos="0,-430" width="391" height="211">
+                        <sprite depth="8" name="backgroundMain" sprite="menu_empty3px" width="391" height="211" color="[black]" type="sliced" fillcenter="false"/>
+                        <sprite depth="1" color="[darkGrey]" type="sliced"/>
+                        <label depth="3" pos="195,-105" width="350" height="70" pivot="center" justify="center" font_size="24" color="[mediumGrey]" text_key="xuiRamAffixDetailPlaceholder"/>
+                    </rect>
+                </rect>
+            </rect>
+        </window>
+
+        <window name="windowRamAffixBrowser" width="606" height="392" panel="Center" cursor_area="true" controller="WeaponAffixesProject.XUiC_RamAffixBrowser,WeaponAffixesProject">
+            <rect name="header" height="43" depth="1">
+                <headerbg/>
+                <sprite depth="2" name="windowIcon" style="icon32px" pos="4,-5" sprite="ui_game_symbol_search"/>
+                <label style="header.name" text="INSPECT" text_key="xuiInspect"/>
+                <label depth="2" name="summary" pos="596,-8" width="360" height="30" pivot="right" justify="right" font_size="24"
+                       text="{ramcontainers} storage / {ramitems} items / {ramaffixes} affixes" color="[selectedColor]"/>
+            </rect>
+
+            <rect name="content" pos="0,-46" width="606" height="346" depth="1">
+                <sprite depth="0" name="backgroundBorder" sprite="menu_empty3px" color="[black]" type="sliced" fillcenter="false"/>
+                <sprite depth="1" name="background" color="[darkGrey]" type="sliced"/>
+
+            <rect name="affixScrollPanel" pos="3,-3" width="600" height="335" depth="2" on_scroll="true" gamepad_selectable="true" snap="false">
+                <defaultscrollbar/>
+                <scrollview pos="0,0" width="536" height="335" clippingsoftness="0,8" scrollfactor="4" scrollwithoutfocus="true">
+                    <grid name="affixGrid" rows="60" cols="8" pos="0,0" cell_width="67" cell_height="67"
+                          controller="WeaponAffixesProject.XUiC_RamAffixGrid,WeaponAffixesProject" repeat_content="true">
+                            <item_stack name="0" controller="XUiC_RamAffixStack,WeaponAffixesProject" cell_size="67" allow_dropping="false"/>
+                        </grid>
+                    </scrollview>
+                </rect>
+
+                <label name="emptyMessage" depth="5" pos="303,-170" width="540" height="60" pivot="center" justify="center"
+                       font_size="30" text_key="xuiRamNoNearbyAffixes" color="[mediumGrey]" visible="{ramnoaffixes}"/>
+            </rect>
+        </window>
+
         <window name="windowCombineAffixChooser" width="153" height="796" panel="Right" cursor_area="true" controller="XUiC_CombineAffixChooser,WeaponAffixesProject">
             <rect style="header.panel">
                 <headerbg />

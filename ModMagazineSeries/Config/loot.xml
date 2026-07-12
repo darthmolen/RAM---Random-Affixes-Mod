@@ -1,0 +1,9 @@
+<configs>
+    <append xpath="/lootcontainers/lootgroup[@name='skillMagazines']">
+        <item name="itemModsSkillMagazine"/>
+    </append>
+
+    <append xpath="/lootcontainers/lootgroup[@name='groupQuestRewardSkillMagazinesAll01']">
+        <item name="itemModsSkillMagazine" count="2"/>
+    </append>
+</configs>

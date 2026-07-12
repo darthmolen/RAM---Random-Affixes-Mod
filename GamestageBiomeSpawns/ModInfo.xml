@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+    <Name value="GamestageBiomeSpawns"/>
+    <DisplayName value="Gamestage Biome Spawns"/>
+    <Version value="1.0"/>
+    <Description value="Makes hostile biome spawns scale with the average gamestage of connected players."/>
+    <Author value="Firevos"/>
+</xml>

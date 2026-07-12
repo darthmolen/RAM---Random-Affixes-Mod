@@ -1,6 +1,13 @@
 ﻿Key,File,Type,UsedInMainMenu,NoTranslate,english,Context
 
 xuiAffixes,UI,XUI,,,Affixes,,
+ramAffixBench,blocks,Block,,,RAM Bench,,
+ramAffixBenchDesc,blocks,Block,,,Scans nearby storage and displays the affixes installed on stored items.,,
+xuiRamAffixBrowser,UI,XUI,,,Nearby Affixes,,
+xuiRamNoNearbyAffixes,UI,XUI,,,No affixes were found in nearby storage.,,
+xuiRamAffixDetail,UI,XUI,,,Affix Detail,,
+xuiRamSelectAffix,UI,XUI,,,Select an affix from the Inspect panel.,,
+xuiRamAffixDetailPlaceholder,UI,XUI,,,More actions will be added here later.,,
 ramHeldWeaponKills,UI,XUI,,,Weapon Kills,,
 ramCombineInfoPanelText,UI,XUI,,,"RAM Combine Bench\n\nAll affixes and kills are copied from item A.\nYou can swap over an affix from Item B by selecting it in the Affix view on the right.\nIt will replace the affix in that slot.\nIt costs 1 swap token per swap and 5 weapon parts if the weapon is made of parts (steel melee weapons and any non-pipe gun).\nThe output slot is only a preview. Press Combine to pay the cost and create the result.",,
 lblContextActionRerollAffix,UI,Item Context Menu,,,Reroll,,
@@ -177,7 +184,7 @@ challengeUnlockMythicWithTokenDesc,Challenges,Challenge,,,"Affix Unlock Tokens h
 
 challengeFindNaturalMythicAffixes,Challenges,Challenge,,,Find a Mythical Item,,
 challengeFindNaturalMythicAffixesShort,Challenges,Challenge,,,Find an item with {ram.naturalMythicRequirement} naturally attached Mythic affixes.,,
-challengeFindNaturalMythicAffixesDesc,Challenges,Challenge,,,"Find an item in loot with at least {ram.naturalMythicRequirement} naturally attached Mythic affixes. The requirement is 60% of the configured maximum number of affixes, rounded up. Rarity increases from Magic Find count.",,
+challengeFindNaturalMythicAffixesDesc,Challenges,Challenge,,,"Find an item in loot with at least {ram.naturalMythicRequirement} naturally attached Mythic affixes.\nRarity increases from magic find do count for this challenge.",,
 
 challengeObjectiveBonusRAMBasics,Challenges,Challenge,,,You can now upgrade affixes to Mythic rarity,,
 challengeRewardBonusRAMBasics,Challenges,Reward,,,Mythic Upgrades,,

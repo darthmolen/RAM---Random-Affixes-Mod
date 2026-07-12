@@ -4,6 +4,8 @@ namespace WeaponAffixesProject
 {
     public static class AffixIncreaseBuffDuration
     {
+        private static readonly int[] DurationIncreaseByTier = { 3, 4, 5, 6, 7, 8, 15 };
+
         public static void IncreaseBuffDurationAffix(EntityPlayerLocal player, ItemValue heldItem)
         {
             List<int> instances = AffixUtils.GetAllAffixesFromItem(heldItem, "buffduration");
@@ -16,8 +18,16 @@ namespace WeaponAffixesProject
             foreach (int entry in instances)
             {
                 string selected = "$" + positiveBuffs[AffixUtils.rng.Next(positiveBuffs.Count)] + "duration";
-                player.Buffs.SetCustomVar(selected, player.Buffs.GetCustomVar(selected) + entry == 7 ? entry + 8 : entry + 2);
+                player.Buffs.SetCustomVar(selected, player.Buffs.GetCustomVar(selected) + GetDurationIncrease(entry));
             }
+        }
+
+        private static int GetDurationIncrease(int tier)
+        {
+            if (tier < 1 || tier > DurationIncreaseByTier.Length)
+                return 0;
+
+            return DurationIncreaseByTier[tier - 1];
         }
     }
 }

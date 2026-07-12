@@ -113,13 +113,9 @@ internal static class AffixUtils
 	{
 		if (maxAffixes < 1)
 		{
-			maxAffixes = 1;
+			return 1;
 		}
-		if (maxAffixes > 10)
-		{
-			maxAffixes = 10;
-		}
-		return (maxAffixes * 3 + 4) / 5;
+		return (maxAffixes < 5) ? maxAffixes : 5;
 	}
 
 	internal static int GetEffectiveMaxAffixes(EntityPlayer player)

@@ -1,60 +1,14 @@
 <config>
     <!-- <append xpath="/blocks">
-        <block name="workbenchCustom">
-            <property name="Class" value="Workstation"/>
-            <property class="Workstation">
-                <property name="Modules" value="output"/>
-                <property name="CraftingAreaRecipes" value="workbenchCustom"/>
-            </property>
-            <property name="UnlockedBy" value="craftingWorkstations"/>
+        <block name="ramAffixBench">
+            <property name="Extends" value="workbench"/>
             <property name="CreativeMode" value="Player"/>
-            <property name="CustomIcon" value="workbenchCustom"/>
-            <property name="DescriptionKey" value="workbenchCustomDesc"/>
-            <property name="DisplayType" value="blockMulti"/>	
-            <property name="WorkstationIcon" value="workbenchCustom"/>
-            <property name="CraftIcon" value="workbenchCustom"/>
-            <property name="Stacknumber" value="1"/>
-            <property name="Material" value="Mmetal"/>
-            <property name="Shape" value="ModelEntity"/>
-            <property name="Model" value="@:Entities/Electrical/monitorKeyboardMousePCPrefab.prefab"/>	
-            <property name="ModelOffset" value="0.5,.5,0"/>
-            <property name="MultiBlockDim" value="2,1,1"/>
-            <property name="ImposterDontBlock" value="true"/>
-            <property name="WaterFlow" value="permitted"/>
-            <property name="Place" value="TowardsPlacerInverted"/>
-            <property name="OnlySimpleRotations" value="true"/>
-            <property name="IsTerrainDecoration" value="true"/>
-            <property name="StabilitySupport" value="false"/>
-            <property name="Weight" value="0"/>	
-            <property name="EconomicValue" value="2000"/>	
-            <property name="TraderStageTemplate" value="midTier1"/>
-            <property name="MaxDamage" value="800"/>
-            <property name="HeatMapStrength" value="1"/>
-            <property name="HeatMapTime" value="500"/>
-            <property name="HeatMapFrequency" value="100"/>
-            <property name="OpenSound" value="open_workbench"/>
-            <property name="CloseSound" value="close_workbench"/>
-            <property name="TakeDelay" value="5"/>
-            <property class="RepairItems">
-                <property name="resourceForgedIron" value="25"/>
-                <property name="resourceMechanicalParts" value="20"/>
-                <property name="resourceWood" value="50"/>
-            </property>
-            <drop event="Harvest" name="resourceScrapIron" count="200" tag="allHarvest"/>
-            <drop event="Harvest" name="resourceWood" count="20" tag="allHarvest"/>
-            <drop event="Harvest" name="terrStone" count="0" tool_category="Disassemble"/>
-            <drop event="Harvest" name="resourceForgedIron" count="10" tag="salvageHarvest"/>
-            <drop event="Harvest" name="resourceMechanicalParts" count="8" tag="salvageHarvest"/>
-            <drop event="Harvest" name="resourceWood" count="20" tag="salvageHarvest"/>
-            <drop event="Destroy" count="0"/>
-            <drop event="Fall" name="terrDestroyedWoodDebris" count="1" prob="0.75" stick_chance="1"/>
+            <property name="CustomIcon" value="workbench"/>
+            <property name="DescriptionKey" value="ramAffixBenchDesc"/>
+            <property name="WorkstationIcon" value="ui_affixes_icon"/>
+            <property name="WorkstationWindow" value="workstation_ramAffixBench"/>
             <property name="SortOrder1" value="B281"/>
-            <property name="SortOrder2" value="0300"/>
-            <property name="Group" value="Building,TCScience,advBuilding"/>
-            <property name="Tags" value="workstationSkill,twitch_workstation"/>
-            <property name="FilterTags" value="MC_playerBlocks,SC_decor"/>
-            <property name="SoundPickup" value="workbench_grab"/>
-            <property name="SoundPlace" value="workbench_place"/>
+            <property name="SortOrder2" value="0310"/>
         </block>
     </append> -->
 </config>

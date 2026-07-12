@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<xml>
-    <Name value="RandomPlus"/>
-    <DisplayName value="Random Plus"/>
-    <Version value="1.0"/>
-    <Description value="Lite version of RAM, just randomizes all base stats of weapons and armor."/>
-    <Author value="Firevos"/>
-    <Website value="."/>
-</xml>

@@ -68,7 +68,7 @@ public static class ChallengeObjectiveUseItemDescriptionText
 			__result = "Unlock a Mythic Affix";
 			break;
 		case "findnaturalmythicaffixes":
-			__result = "Find a Natural Mythic Item";
+			__result = "Find " + AffixUtils.GetNaturalMythicChallengeRequirement() + " Natural Mythic Affixes";
 			break;
 		}
 	}

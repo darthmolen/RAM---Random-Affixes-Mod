@@ -4908,7 +4908,7 @@
             <property name="Tags" value="affix_mod"/>
             <property name="MaxModsAllowed" value="6"/>
             <effect_group>
-                <passive_effect name="HealthChangeOT" operation="perc_add" value=".0166"/>
+                <passive_effect name="HealthChangeOT" operation="base_add" value=".0166"/>
             </effect_group>
         </item_modifier>
 
@@ -4919,7 +4919,7 @@
             <property name="Tags" value="affix_mod"/>
             <property name="MaxModsAllowed" value="6"/>
             <effect_group>
-                <passive_effect name="HealthChangeOT" operation="perc_add" value=".022"/>
+                <passive_effect name="HealthChangeOT" operation="base_add" value=".022"/>
             </effect_group>
         </item_modifier>
 
@@ -4930,7 +4930,7 @@
             <property name="Tags" value="affix_mod"/>
             <property name="MaxModsAllowed" value="6"/>
             <effect_group>
-                <passive_effect name="HealthChangeOT" operation="perc_add" value=".033"/>
+                <passive_effect name="HealthChangeOT" operation="base_add" value=".033"/>
             </effect_group>
         </item_modifier>
 
@@ -4941,7 +4941,7 @@
             <property name="Tags" value="affix_mod"/>
             <property name="MaxModsAllowed" value="6"/>
             <effect_group>
-                <passive_effect name="HealthChangeOT" operation="perc_add" value=".05"/>
+                <passive_effect name="HealthChangeOT" operation="base_add" value=".05"/>
             </effect_group>
         </item_modifier>
 
@@ -4952,7 +4952,7 @@
             <property name="Tags" value="affix_mod"/>
             <property name="MaxModsAllowed" value="6"/>
             <effect_group>
-                <passive_effect name="HealthChangeOT" operation="perc_add" value=".066"/>
+                <passive_effect name="HealthChangeOT" operation="base_add" value=".066"/>
             </effect_group>
         </item_modifier>
 
@@ -4963,7 +4963,7 @@
             <property name="Tags" value="affix_mod"/>
             <property name="MaxModsAllowed" value="6"/>
             <effect_group>
-                <passive_effect name="HealthChangeOT" operation="perc_add" value=".1"/>
+                <passive_effect name="HealthChangeOT" operation="base_add" value=".1"/>
             </effect_group>
         </item_modifier>
 
@@ -4974,7 +4974,7 @@
             <property name="Tags" value="affix_mod"/>
             <property name="MaxModsAllowed" value="6"/>
             <effect_group>
-                <passive_effect name="HealthChangeOT" operation="perc_add" value="0.2"/>
+                <passive_effect name="HealthChangeOT" operation="base_add" value="0.2"/>
             </effect_group>
         </item_modifier>
     </append>

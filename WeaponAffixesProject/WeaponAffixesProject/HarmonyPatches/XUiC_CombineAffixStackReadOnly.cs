@@ -15,6 +15,12 @@ namespace WeaponAffixesProject
                 return false;
             }
 
+            if (__instance is XUiC_RamAffixStack ramAffixStack)
+            {
+                ramAffixStack.ToggleSelection();
+                return false;
+            }
+
             return true;
         }
 
@@ -28,6 +34,12 @@ namespace WeaponAffixesProject
                 return false;
             }
 
+            if (__instance is XUiC_RamAffixStack ramAffixStack)
+            {
+                ramAffixStack.ToggleSelection();
+                return false;
+            }
+
             return true;
         }
 
@@ -35,7 +47,7 @@ namespace WeaponAffixesProject
         [HarmonyPrefix]
         public static bool HandlePartialStackPickupPrefix(XUiC_ItemStack __instance)
         {
-            if (__instance is XUiC_CombineAffixStack)
+            if (__instance is XUiC_CombineAffixStack || __instance is XUiC_RamAffixStack)
                 return false;
 
             return true;
@@ -45,7 +57,7 @@ namespace WeaponAffixesProject
         [HarmonyPrefix]
         public static bool HandleStackSwapPrefix(XUiC_ItemStack __instance)
         {
-            if (__instance is XUiC_CombineAffixStack)
+            if (__instance is XUiC_CombineAffixStack || __instance is XUiC_RamAffixStack)
                 return false;
 
             return true;

@@ -1,0 +1,30 @@
+<configs>
+    <insertBefore xpath="/items/item[@name='adminPerkBook']">
+        <item name="itemModsSkillMagazine">
+            <property name="Extends" value="masterSkillMagazine"/>
+            <property name="Tags" value="itemModsCSM,csm"/>
+            <property name="CustomIcon" value="bookModdersDelight"/>
+            <property name="DescriptionKey" value="itemModsSkillMagazineDesc"/>
+            <property name="Unlocks" value="craftingItemMods"/>
+            <effect_group tiered="false">
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="AddProgressionLevel"
+                                  progression_name="craftingItemMods" level="1"/>
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
+            </effect_group>
+            <effect_group tiered="false">
+                <requirement_group op="or">
+                    <requirement name="ProgressionLevel" progression_name="perkIntellectMastery" operation="GTE" value="3"/>
+                    <requirement name="HasBuff" buff="buffNerdOutfit"/>
+                </requirement_group>
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="nerdPointChance" operation="set" value="1"/>
+            </effect_group>
+            <effect_group tiered="false">
+                <requirement name="CVarCompare" cvar="nerdPointChance" operation="EQ" value="1"/>
+                <requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="@$nerdOutfitSkillPointChance"/>
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="AddProgressionLevel" progression_name="craftingItemMods" level="1"/>
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="PlaySound" sound="nerd_outfit_perk" play_in_head="true"/>
+                <triggered_effect trigger="onSelfPrimaryActionEnd" action="RemoveCVar" cvar="nerdPointChance"/>
+            </effect_group>
+        </item>
+    </insertBefore>
+</configs>

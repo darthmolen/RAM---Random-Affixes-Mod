@@ -1,0 +1,36 @@
+<configs>
+    <!-- Quality mods can be unlocked either by their original schematic or by the magazine skill. -->
+    <set xpath="/item_modifiers/item_modifier[@name='modFuelTankSmall']/property[@name='UnlockedBy']/@value">modFuelTankSmallSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modGunMagazineExtender']/property[@name='UnlockedBy']/@value">modGunMagazineExtenderSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modGunMeleeTheHunter']/property[@name='UnlockedBy']/@value">modGunMeleeTheHunterSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeGraveDigger']/property[@name='UnlockedBy']/@value">modMeleeGraveDiggerSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeSerratedBlade']/property[@name='UnlockedBy']/@value">modMeleeSerratedBladeSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeStructuralBrace']/property[@name='UnlockedBy']/@value">modMeleeStructuralBraceSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeWeightedHead']/property[@name='UnlockedBy']/@value">modMeleeWeightedHeadSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeWoodSplitter']/property[@name='UnlockedBy']/@value">modMeleeWoodSplitterSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modFuelTankLarge']/property[@name='UnlockedBy']/@value">modFuelTankLargeSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modGunBowArrowRest']/property[@name='UnlockedBy']/@value">modGunBowArrowRestSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modGunCrippleEm']/property[@name='UnlockedBy']/@value">modGunCrippleEmSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeBunkerBuster']/property[@name='UnlockedBy']/@value">modMeleeBunkerBusterSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeClubBarbedWire']/property[@name='UnlockedBy']/@value">modMeleeClubBarbedWireSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeClubBurningShaft']/property[@name='UnlockedBy']/@value">modMeleeClubBurningShaftSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeFortifyingGrip']/property[@name='UnlockedBy']/@value">modMeleeFortifyingGripSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modVehicleFuelSaver']/property[@name='UnlockedBy']/@value">modVehicleFuelSaverSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modVehicleReserveFuelTank']/property[@name='UnlockedBy']/@value">modVehicleReserveFuelTankSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modArmorBandolier']/property[@name='UnlockedBy']/@value">modArmorBandolierSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modGunBowPolymerString']/property[@name='UnlockedBy']/@value">modGunBowPolymerStringSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modGunMeleeRadRemover']/property[@name='UnlockedBy']/@value">modGunMeleeRadRemoverSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeClubMetalSpikes']/property[@name='UnlockedBy']/@value">modMeleeClubMetalSpikesSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeErgonomicGrip']/property[@name='UnlockedBy']/@value">modMeleeErgonomicGripSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeIronBreaker']/property[@name='UnlockedBy']/@value">modMeleeIronBreakerSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeTemperedBlade']/property[@name='UnlockedBy']/@value">modMeleeTemperedBladeSchematic,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modRoboticDroneStunWeaponMod']/property[@name='UnlockedBy']/@value">modRoboticDroneStunWeaponModSchematic,craftingItemMods</set>
+
+    <!-- Preserve the perk-book route while adding the magazine as an alternative. -->
+    <set xpath="/item_modifiers/item_modifier[@name='modGunDrumMagazineExtender']/property[@name='UnlockedBy']/@value">perkAutoWeaponsDrumMag,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modGunShotgunTubeExtenderMagazine']/property[@name='UnlockedBy']/@value">perkShotgunMessiahMagazine,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeClubMetalChain']/property[@name='UnlockedBy']/@value">perkBatterUpMetalChain,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeFiremansAxeMod']/property[@name='UnlockedBy']/@value">perkFiremansAlmanacAxes,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modMeleeDiamondTip']/property[@name='UnlockedBy']/@value">perkArtOfMiningDiamondTools,craftingItemMods</set>
+    <set xpath="/item_modifiers/item_modifier[@name='modArmorCigar']/property[@name='UnlockedBy']/@value">perkUrbanCombatCigar,craftingItemMods</set>
+</configs>

@@ -1,3 +1,5 @@
+using System;
+using HarmonyLib;
 using WeaponBuffMod.HarmonyPatches;
 
 namespace WeaponAffixesProject.HarmonyPatches;
@@ -24,5 +26,23 @@ internal static class RamLocalizationTokens
 	private static int ClampAffixCap(int value)
 	{
 		return (value < 1) ? 1 : value;
+	}
+}
+
+[HarmonyPatch(typeof(Localization), nameof(Localization.Get), new Type[] { typeof(string), typeof(bool), typeof(string) })]
+internal static class LocalizationGetRamTokens
+{
+	private static void Postfix(ref string __result)
+	{
+		__result = RamLocalizationTokens.Replace(__result);
+	}
+}
+
+[HarmonyPatch(typeof(Localization), nameof(Localization.TryGet))]
+internal static class LocalizationTryGetRamTokens
+{
+	private static void Postfix(ref string _localizedString)
+	{
+		_localizedString = RamLocalizationTokens.Replace(_localizedString);
 	}
 }

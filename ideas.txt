@@ -18,10 +18,20 @@ make a mod to make wildspawns gs based, walkersim compatible.
 
 Craftable Map. find a piece of a map in loot, unlocks that area (city/biome)
 
+no repair during horde night setting
+
+turret targeting mod, high customizability on targeting from turrets. target specific type of zombies, based on distance, height, health etc
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Health Regen affix is broken.
-Empty affix slots on weapons (maybe due to combining), empty slots removed after combining again.
+Stat added to track kills on weapons in player stat page DONE
+Health Regen affix is broken. DONE
+nerf ascension token cost. DONE
+increase buff duration does the opposite. DONE
+challenges and skills dont show the number correctly from the setting DONE
+nerf find natural mythic item challenge DONE
+
+cap rarity on quality
 
 Izy's gunpack incompatability with uniques
 

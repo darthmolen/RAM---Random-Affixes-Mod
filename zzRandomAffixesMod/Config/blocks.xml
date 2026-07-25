@@ -1,14 +1,20 @@
 <config>
-    <!-- <append xpath="/blocks">
+    <append xpath="/blocks">
         <block name="ramAffixBench">
             <property name="Extends" value="workbench"/>
             <property name="CreativeMode" value="Player"/>
-            <property name="CustomIcon" value="workbench"/>
+            <property name="CustomIcon" value="ramAffixBench"/>
             <property name="DescriptionKey" value="ramAffixBenchDesc"/>
             <property name="WorkstationIcon" value="ui_affixes_icon"/>
             <property name="WorkstationWindow" value="workstation_ramAffixBench"/>
+            <property name="Model" value="@:Entities/Electrical/monitorKeyboardMousePCPrefab.prefab"/>
+            <property name="ModelOffset" value=".5,0,0"/>
+            <property name="MultiBlockDim" value="2,1,1"/>
+            <property name="GndAlign" value="1"/>
+            <property name="OpenSound" value="open_vending"/>
+            <property name="CloseSound" value="close_vending"/>
             <property name="SortOrder1" value="B281"/>
             <property name="SortOrder2" value="0310"/>
         </block>
-    </append> -->
+    </append>
 </config>

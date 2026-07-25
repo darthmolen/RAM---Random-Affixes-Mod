@@ -62,7 +62,7 @@ public class XUiC_RamAffixDetails : XUiController
         if (itemClass == null || !AffixUtils.TryGetAffixTierIndex(itemClass.Name, out int tierIndex))
             return string.Empty;
 
-        return "Tier " + (tierIndex + 1);
+        return string.Format(Localization.Get("ramAffixDetailTier"), tierIndex + 1);
     }
 
     private static string FormatColor(Color32 color)

@@ -11,19 +11,24 @@ public class XUiC_RamAffixGrid : XUiC_ItemStackGrid
     public override XUiC_ItemStack.StackLocationTypes StackLocation =>
         XUiC_ItemStack.StackLocationTypes.Creative;
 
-    public void SetAffixes(List<ItemStack> affixes)
+    internal XUiC_RamAffixStack GetRamStack(int slot) =>
+        itemControllers != null && slot >= 0 && slot < itemControllers.Length ? itemControllers[slot] as XUiC_RamAffixStack : null;
+
+    public void SetAffixes(List<ItemStack> affixes, List<RamAffixSource> sources, int page)
     {
         if (itemControllers == null)
             return;
 
         int affixCount = affixes?.Count ?? 0;
+        int firstAffix = page * XUiC_RamAffixBrowser.AffixesPerPage;
         for (int i = 0; i < itemControllers.Length; i++)
         {
             XUiC_ItemStack controller = itemControllers[i];
-            bool hasAffix = i < affixCount;
-            ItemStack displayStack = hasAffix ? affixes[i].Clone() : ItemStack.Empty.Clone();
+            int affixIndex = firstAffix + i;
+            bool hasAffix = affixIndex < affixCount;
+            ItemStack displayStack = hasAffix ? affixes[affixIndex].Clone() : ItemStack.Empty.Clone();
             if (controller is XUiC_RamAffixStack affixController)
-                affixController.SetDisplayStack(displayStack);
+                affixController.SetDisplayStack(displayStack, hasAffix ? sources[affixIndex] : null);
             else
                 controller.ItemStack = displayStack;
             controller.SlotNumber = i;
@@ -42,7 +47,8 @@ public class XUiC_RamAffixGrid : XUiC_ItemStackGrid
 
         selectedSlot = selectedSlot == slotNumber ? -1 : slotNumber;
         XUiC_RamAffixBrowser browser = GetParentByType<XUiC_RamAffixBrowser>();
-        browser?.SelectAffix(selectedSlot == -1 ? ItemStack.Empty : stack.Clone());
+        RamAffixSource source = selectedSlot >= 0 && itemControllers[selectedSlot] is XUiC_RamAffixStack ram ? ram.Source : null;
+        browser?.SelectAffix(selectedSlot == -1 ? ItemStack.Empty : stack.Clone(), source, selectedSlot >= 0 ? itemControllers[selectedSlot] as XUiC_RamAffixStack : null);
 
         if (itemControllers != null)
         {

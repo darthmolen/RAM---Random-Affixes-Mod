@@ -1,11 +1,12 @@
 <configs>
     <insertAfter xpath="/recipes/recipe[@name='resourceCoalBundle']">
-        <!-- <recipe name="ramAffixBench" count="1" craft_time="60" craft_exp_gain="50" tags="workbenchCrafting">
-            <ingredient name="resourceForgedIron" count="25"/>
-            <ingredient name="resourceMechanicalParts" count="20"/>
-            <ingredient name="resourceElectricParts" count="10"/>
-            <ingredient name="resourceWood" count="50"/>
-        </recipe> -->
+        <recipe name="ramAffixBench" count="1" craft_time="60" craft_exp_gain="50" craft_area="workbench" tags="workbenchCrafting">
+            <ingredient name="resourceForgedSteel" count="25"/>
+            <ingredient name="resourceElectricParts" count="50"/>
+            <ingredient name="affixRerollToken" count="2"/>
+            <ingredient name="resourceForgedIron" count="50"/>
+            <ingredient name="resourceSpring" count="10"/>
+        </recipe>
 
         <recipe name="affixBlankToken" count="1" craft_time="10" craft_exp_gain="0" craft_area="workbench" tags="workbenchCrafting">
             <ingredient name="resourceScrapBrass" count="200"/>

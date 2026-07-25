@@ -12,9 +12,29 @@ namespace WeaponAffixesProject
         {
             try
             {
-                if (!(itemController is XUiC_ItemCosmeticStack) && !(itemController is XUiC_ItemPartStack) && !(itemController is XUiC_ItemStack)) return;
+                if (!(itemController is XUiC_ItemCosmeticStack) && !(itemController is XUiC_ItemPartStack) && !(itemController is XUiC_ItemStack) && !(itemController is XUiC_RamAffixBrowser)) return;
 
                 var xui = __instance.xui;
+                if (itemController is XUiC_RamAffixBrowser ramBrowser)
+                {
+                    if (ramBrowser.IsViewingSourceItem)
+                    {
+                        MI_AddActionListEntry?.Invoke(__instance, new object[] { new RamTakeSourceItemAction(itemController) });
+                        return;
+                    }
+                    if (ramBrowser.SelectedSource?.ParentStack != null) MI_AddActionListEntry?.Invoke(__instance, new object[] { new RamShowInstalledItemAction(itemController) });
+                    if (RamAffixActions.CanExtract(ramBrowser.SelectedSource)) MI_AddActionListEntry?.Invoke(__instance, new object[] { new RamExtractAffixAction(itemController) });
+                    if (RamAffixActions.CanUpgrade(ramBrowser.SelectedSource)) MI_AddActionListEntry?.Invoke(__instance, new object[] { new RamUpgradeAffixAction(itemController) });
+                    return;
+                }
+                if (itemController is XUiC_RamAffixStack ramStack)
+                {
+                    XUiC_RamAffixBrowser browser = ramStack.GetParentByType<XUiC_RamAffixBrowser>();
+                    if (browser?.SelectedSource?.ParentStack != null) MI_AddActionListEntry?.Invoke(__instance, new object[] { new RamShowInstalledItemAction(browser) });
+                    if (RamAffixActions.CanExtract(browser?.SelectedSource)) MI_AddActionListEntry?.Invoke(__instance, new object[] { new RamExtractAffixAction(browser) });
+                    if (RamAffixActions.CanUpgrade(browser?.SelectedSource)) MI_AddActionListEntry?.Invoke(__instance, new object[] { new RamUpgradeAffixAction(browser) });
+                    return;
+                }
                 // Item/Armor one
                 if (itemController is XUiC_ItemStack)
                 {

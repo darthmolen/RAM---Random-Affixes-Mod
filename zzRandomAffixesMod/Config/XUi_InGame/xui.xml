@@ -1,12 +1,10 @@
 <configs>
     <append xpath="/xui">
-        <window_group name="workstation_ramAffixBench" controller="WeaponAffixesProject.XUiC_RamBenchWindowGroup,WeaponAffixesProject" open_backpack_on_open="false" close_compass_on_open="true" defaultselected="windowRamAffixBrowser">
+        <window_group name="workstation_ramAffixBench" controller="WeaponAffixesProject.XUiC_RamBenchWindowGroup,WeaponAffixesProject" open_backpack_on_open="true" close_compass_on_open="true" defaultselected="affixGrid">
             <window name="windowCraftingList" visible="false"/>
             <window name="craftingInfoPanel" visible="false"/>
             <window name="windowCraftingQueue" visible="false"/>
-            <window name="windowRamAffixDetails"/>
             <window name="windowRamAffixBrowser"/>
-            <window name="windowBackpack"/>
         </window_group>
     </append>
 

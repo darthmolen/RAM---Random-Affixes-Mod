@@ -106,25 +106,21 @@ internal static class CombineAffixCost
 
 	private static void ShowMissingCost(EntityPlayerLocal player, XUi xui, List<ItemStack> missing)
 	{
-		StringBuilder message = new StringBuilder("You need ");
+		StringBuilder costList = new StringBuilder();
 		for (int i = 0; i < missing.Count; i++)
 		{
 			ItemStack cost = missing[i];
 			if (i > 0)
 			{
-				message.Append((i == missing.Count - 1) ? " and " : ", ");
+				costList.Append(Localization.Get(i == missing.Count - 1 ? "ramListSeparatorFinal" : "ramListSeparator"));
 			}
-			message.Append(cost.count);
-			message.Append(' ');
-			message.Append(cost.itemValue.ItemClass.localizedName);
+			costList.Append(string.Format(Localization.Get("ramCombineMissingCostEntry"), cost.count, cost.itemValue.ItemClass.localizedName));
 			xui.CollectedItemList?.AddItemStack(new ItemStack(cost.itemValue, 0));
 		}
-		message.Append(" to move the selected affix");
-		if (missing.Count != 1 || missing[0].count != 1)
-		{
-			message.Append("es");
-		}
-		message.Append(" from Item B.");
+		string messageKey = missing.Count == 1 && missing[0].count == 1
+			? "ramCombineMissingCostSingle"
+			: "ramCombineMissingCostPlural";
+		string message = string.Format(Localization.Get(messageKey), costList);
 		GameManager.ShowTooltip(player, message.ToString(), string.Empty, "ui/ui_denied");
 	}
 }

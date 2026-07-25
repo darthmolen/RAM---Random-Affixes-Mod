@@ -44,7 +44,7 @@ namespace WeaponBuffMod.HarmonyPatches
                 1,
                 new[] { 1, 0 },
                 "{0}",
-                new[] { "Show", "Hide" }),
+                new[] { "goRamOptionShow", "goRamOptionHide" }),
             new RamSandboxOptionDefinition(
                 "AffixRarity",
                 "goAffixRarity",
@@ -53,7 +53,7 @@ namespace WeaponBuffMod.HarmonyPatches
                 100,
                 new[] { 25, 50, 100, 150, 200 },
                 "{0}",
-                new[] { "Very Low", "Low", "Default", "High", "Very High" }),
+                new[] { "goRamOptionVeryLow", "goRamOptionLow", "goRamOptionDefault", "goRamOptionHigh", "goRamOptionVeryHigh" }),
             new RamSandboxOptionDefinition(
                 "TokenLootAbundance",
                 "goTokenLootAbundance",
@@ -62,7 +62,7 @@ namespace WeaponBuffMod.HarmonyPatches
                 100,
                 new[] { 0, 25, 35, 50, 65, 75, 85, 100, 125, 150, 200, 300, 400, 500 },
                 "{0}%",
-                new[] { "None", "25%", "35%", "50%", "65%", "75%", "85%", "100%", "125%", "150%", "200%", "300%", "400%", "500%" })
+                new[] { "goRamOptionNone", "goRamOption25Percent", "goRamOption35Percent", "goRamOption50Percent", "goRamOption65Percent", "goRamOption75Percent", "goRamOption85Percent", "goRamOption100Percent", "goRamOption125Percent", "goRamOption150Percent", "goRamOption200Percent", "goRamOption300Percent", "goRamOption400Percent", "goRamOption500Percent" })
         };
 
         public static void Postfix(SandboxOptions.SandboxOptionManager __instance)
@@ -160,7 +160,7 @@ namespace WeaponBuffMod.HarmonyPatches
             option.ValueOptions = new SandboxOptions.SandboxOptionValueSetInt
             {
                 IntValues = definition.Values,
-                DisplayValues = definition.DisplayValues,
+                DisplayValues = LocalizeDisplayValues(definition.DisplayValueLocalizationKeys),
                 DisplayFormat = definition.DisplayFormat
             };
             option.ValueOptions.Init();
@@ -196,6 +196,26 @@ namespace WeaponBuffMod.HarmonyPatches
             option.NewUISection = false;
             option.optionNameText = Localization.Get(definition.LocalizationKey);
             option.descriptionText = Localization.Get(definition.DescriptionLocalizationKey);
+            if (option.ValueOptions is SandboxOptions.SandboxOptionValueSetInt valueSet)
+            {
+                valueSet.DisplayValues = LocalizeDisplayValues(definition.DisplayValueLocalizationKeys);
+                valueSet.Init();
+            }
+        }
+
+        private static string[] LocalizeDisplayValues(string[] localizationKeys)
+        {
+            if (localizationKeys == null)
+            {
+                return null;
+            }
+
+            string[] values = new string[localizationKeys.Length];
+            for (int i = 0; i < localizationKeys.Length; i++)
+            {
+                values[i] = Localization.Get(localizationKeys[i]);
+            }
+            return values;
         }
 
         private static void MoveOptionToRamCategory(SandboxOptions.SandboxOptionManager manager, SandboxOptions.BaseSandboxOption option, int sortOrder)
@@ -243,7 +263,7 @@ namespace WeaponBuffMod.HarmonyPatches
                 int defaultValue,
                 int[] values,
                 string displayFormat,
-                string[] displayValues = null)
+                string[] displayValueLocalizationKeys = null)
             {
                 OptionName = optionName;
                 LocalizationKey = localizationKey;
@@ -252,7 +272,7 @@ namespace WeaponBuffMod.HarmonyPatches
                 DefaultValue = defaultValue;
                 Values = values;
                 DisplayFormat = displayFormat;
-                DisplayValues = displayValues;
+                DisplayValueLocalizationKeys = displayValueLocalizationKeys;
             }
 
             public string OptionName { get; }
@@ -269,7 +289,7 @@ namespace WeaponBuffMod.HarmonyPatches
 
             public string DisplayFormat { get; }
 
-            public string[] DisplayValues { get; }
+            public string[] DisplayValueLocalizationKeys { get; }
 
             public int SortOrder => Array.FindIndex(Definitions, definition => definition.OptionName == OptionName);
         }

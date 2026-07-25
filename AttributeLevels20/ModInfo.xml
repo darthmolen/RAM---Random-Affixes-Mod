@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+    <Name value="AttributeLevels20"/>
+    <DisplayName value="Increased Max Attributes"/>
+    <Description value="Extends Strength, Agility, Fortitude, Perception, and Intellect to level 20. Levels 11-20 must come from non-purchase bonuses." />
+    <Author value="Codex" />
+    <Version value="1.0.0" />
+</xml>

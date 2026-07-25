@@ -9,6 +9,16 @@ namespace WeaponAffixesProject
     {
         private static void Postfix(XUiC_ItemInfoWindow __instance, ItemStack stack)
         {
+            XUiC_RamBenchWindowGroup ramBench = __instance.GetParentByType<XUiC_RamBenchWindowGroup>();
+            if (ramBench != null)
+            {
+                XUiController emptyInfo = ramBench.GetChildById("emptyInfoPanel");
+                if (emptyInfo?.ViewComponent != null)
+                    emptyInfo.ViewComponent.IsVisible = false;
+                if (__instance.ViewComponent != null)
+                    __instance.ViewComponent.IsVisible = true;
+            }
+
             bool flag = stack.itemValue.type == __instance.itemStack.itemValue.type && stack.count == __instance.itemStack.count;
             __instance.itemStack = stack.Clone();
             bool flag2 = __instance.itemStack != null && !__instance.itemStack.IsEmpty();

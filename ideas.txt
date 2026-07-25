@@ -16,7 +16,16 @@ make a mod to make wildspawns gs based, walkersim compatible.
     - option to increase spawns
     - add all zombie types to any biome spawngroup
 
-Craftable Map. find a piece of a map in loot, unlocks that area (city/biome)
+Craftable Map. find a piece of a map in loot, unlocks that area (city/biome). make an alternate version with different recipe (since dyes are too loot rng reliant)
+Make the map a holdable item. 
+Same for a watch and compass, firsly, just craftable versions to unlock them.
+watch could also be a mod that needs to be installed in gloves.
+
+mod that increases attribute to max of 20, but cant put in skill points past 10. so yeah need other bonuses to increase it, mods, affixes food buffs etc.
+
+food overhaul to give them more meaningfull buffs.
+
+Add cooking pot/grill anvil etc to modders delight
 
 no repair during horde night setting
 
@@ -46,6 +55,8 @@ Some TI commands
 Unique Ideas:
     -   Fireaxe is fire based (100% to set on fire, (higher damage fire???)) chance to set self on fire on every swing.
     -   Nerd outfit: 'Teacher armor' increased skill xp, maybe something else school themed. Only found in lockers.
+
+Junkie's club. steel club, likes bleed and burns and attack speed.
 
 Joke/unique affixes for uniques:
     chance to fall down when powerattacking

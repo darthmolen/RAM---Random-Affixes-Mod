@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+    <set xpath="/windows/window[@name='windowSkillAttributeInfo']/rect[@name='content']/rect[@name='tableBox']/grid/@rows">9</set>
+</configs>

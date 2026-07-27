@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configs>
-    <set xpath="/windows/window[@name='windowSkillAttributeInfo']/rect[@name='content']/rect[@name='tableBox']/grid/@rows">9</set>
+    <set xpath="/windows/window[@name='windowSkillAttributeInfo']/@height">770</set>
+    <set xpath="/windows/window[@name='windowSkillAttributeInfo']/rect[@name='content']/@height">709</set>
+    <set xpath="/windows/window[@name='windowSkillAttributeInfo']/rect[@name='content']/rect[@name='pagerBox']/@pos">3,-729</set>
+    <set xpath="/windows/window[@name='windowSkillAttributeInfo']/@hidden_entries_with_paging">0</set>
+    <set xpath="/windows/window[@name='windowSkillAttributeInfo']/rect[@name='content']/rect[@name='tableBox']/grid/@rows">10</set>
 </configs>

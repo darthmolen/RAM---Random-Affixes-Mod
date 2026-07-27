@@ -24,6 +24,7 @@ watch could also be a mod that needs to be installed in gloves.
 mod that increases attribute to max of 20, but cant put in skill points past 10. so yeah need other bonuses to increase it, mods, affixes food buffs etc.
 
 food overhaul to give them more meaningfull buffs.
+cooking skill/cooking pot level increases food quality rather than cooking time/cost.
 
 Add cooking pot/grill anvil etc to modders delight
 

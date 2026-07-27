@@ -1,4 +1,0 @@
-<controls>
-<setattribute xpath="//mainmenubutton" name="force_hide">false</setattribute>
-<setattribute xpath="//mainmenubutton//*" name="force_hide">${force_hide}</setattribute>
-</controls>

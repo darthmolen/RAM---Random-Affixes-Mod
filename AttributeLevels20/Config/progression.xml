@@ -1,103 +1,236 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configs>
-    <!-- The vanilla skill window already pages attribute rows after ten entries. -->
     <set xpath="/progression/attributes/@max_level">20</set>
-
-    <!-- Extend the five main attributes. Each effect continues the vanilla curve at a constant per-level increment. -->
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/@max_level">20</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/@max_level">20</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/@max_level">20</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/@max_level">20</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/@max_level">20</set>
-
-    <!-- The attribute row controller requires an effect_description entry to render each level. -->
-    <append xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]"><effect_description level="11" desc_key="attStrengthRank10Desc"/><effect_description level="12" desc_key="attStrengthRank10Desc"/><effect_description level="13" desc_key="attStrengthRank10Desc"/><effect_description level="14" desc_key="attStrengthRank10Desc"/><effect_description level="15" desc_key="attStrengthRank10Desc"/><effect_description level="16" desc_key="attStrengthRank10Desc"/><effect_description level="17" desc_key="attStrengthRank10Desc"/><effect_description level="18" desc_key="attStrengthRank10Desc"/><effect_description level="19" desc_key="attStrengthRank10Desc"/><effect_description level="20" desc_key="attStrengthRank10Desc"/></append>
-    <append xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]"><effect_description level="11" desc_key="attFortitudeRank10Desc"/><effect_description level="12" desc_key="attFortitudeRank10Desc"/><effect_description level="13" desc_key="attFortitudeRank10Desc"/><effect_description level="14" desc_key="attFortitudeRank10Desc"/><effect_description level="15" desc_key="attFortitudeRank10Desc"/><effect_description level="16" desc_key="attFortitudeRank10Desc"/><effect_description level="17" desc_key="attFortitudeRank10Desc"/><effect_description level="18" desc_key="attFortitudeRank10Desc"/><effect_description level="19" desc_key="attFortitudeRank10Desc"/><effect_description level="20" desc_key="attFortitudeRank10Desc"/></append>
-    <append xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]"><effect_description level="11" desc_key="attAgilityRank10Desc"/><effect_description level="12" desc_key="attAgilityRank10Desc"/><effect_description level="13" desc_key="attAgilityRank10Desc"/><effect_description level="14" desc_key="attAgilityRank10Desc"/><effect_description level="15" desc_key="attAgilityRank10Desc"/><effect_description level="16" desc_key="attAgilityRank10Desc"/><effect_description level="17" desc_key="attAgilityRank10Desc"/><effect_description level="18" desc_key="attAgilityRank10Desc"/><effect_description level="19" desc_key="attAgilityRank10Desc"/><effect_description level="20" desc_key="attAgilityRank10Desc"/></append>
-    <append xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]"><effect_description level="11" desc_key="attIntellectRank10Desc"/><effect_description level="12" desc_key="attIntellectRank10Desc"/><effect_description level="13" desc_key="attIntellectRank10Desc"/><effect_description level="14" desc_key="attIntellectRank10Desc"/><effect_description level="15" desc_key="attIntellectRank10Desc"/><effect_description level="16" desc_key="attIntellectRank10Desc"/><effect_description level="17" desc_key="attIntellectRank10Desc"/><effect_description level="18" desc_key="attIntellectRank10Desc"/><effect_description level="19" desc_key="attIntellectRank10Desc"/><effect_description level="20" desc_key="attIntellectRank10Desc"/></append>
-
-    <!-- Levels 11-20 remain attainable through buffs/items/other bonuses, but cannot be bought with skill points. -->
+    <remove xpath="/progression/attributes/attribute[@name='attPerception']"/>
+    <remove xpath="/progression/attributes/attribute[@name='attStrength']"/>
+    <remove xpath="/progression/attributes/attribute[@name='attFortitude']"/>
+    <remove xpath="/progression/attributes/attribute[@name='attAgility']"/>
+    <remove xpath="/progression/attributes/attribute[@name='attIntellect']"/>
+    <insertBefore xpath="/progression/attributes/attribute[@name='attGeneralPerks']">
+        <attribute name="attPerception" name_key="attPerceptionName" desc_key="attPerceptionDesc" icon="ui_game_symbol_stealth" override_cost="1,1,1,1,1,2,2,2,3,3,9999,9999,9999,9999,9999,9999,9999,9999,9999,9999">
+        		<level_requirements level="1"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="2"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="3"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="4"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="5"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="6"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="7"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="8"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="9"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints03"/></level_requirements>
+        		<level_requirements level="10"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints03"/></level_requirements>
+        
+        		<effect_group>
+        			<requirement name="ItemHasTags" tags="attPerception"/>
+        				<passive_effect name="HeadshotDamageModifier" operation="perc_add" level="2,8" value="0.1,.7" tags="head"/>
+        				<passive_effect name="HeadshotDamageModifier" operation="perc_add" level="9,10" value=".85,1" tags="head"/>
+        				<passive_effect name="DismemberChance" operation="base_add" level="2,10" value=".05,.45"/>
+        		</effect_group>
+        
+        		<effect_group>
+        			<effect_description level="1" desc_key="attPerceptionRank01Desc" long_desc_key="attPerceptionRank01LongDesc"/>
+        			<effect_description level="2" desc_key="attPerceptionRank02Desc" long_desc_key="attPerceptionRank02LongDesc"/>
+        			<effect_description level="3" desc_key="attPerceptionRank03Desc" long_desc_key="attPerceptionRank03LongDesc"/>
+        			<effect_description level="4" desc_key="attPerceptionRank04Desc" long_desc_key="attPerceptionRank04LongDesc"/>
+        			<effect_description level="5" desc_key="attPerceptionRank05Desc" long_desc_key="attPerceptionRank05LongDesc"/>
+        			<effect_description level="6" desc_key="attPerceptionRank06Desc" long_desc_key="attPerceptionRank06LongDesc"/>
+        			<effect_description level="7" desc_key="attPerceptionRank07Desc" long_desc_key="attPerceptionRank07LongDesc"/>
+        			<effect_description level="8" desc_key="attPerceptionRank08Desc" long_desc_key="attPerceptionRank08LongDesc"/>
+        			<effect_description level="9" desc_key="attPerceptionRank09Desc" long_desc_key="attPerceptionRank09LongDesc"/>
+        			<effect_description level="10" desc_key="attPerceptionRank10Desc" long_desc_key="attPerceptionRank10LongDesc"/>
+        		</effect_group>
+        	</attribute>
+        
+        	<attribute name="attStrength" name_key="attStrengthName" desc_key="attStrengthDesc" icon="ui_game_symbol_muscle" override_cost="1,1,1,1,1,2,2,2,3,3,9999,9999,9999,9999,9999,9999,9999,9999,9999,9999">
+        		<level_requirements level="1"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="2"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="3"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="4"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="5"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="6"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="7"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="8"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="9"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints03"/></level_requirements>
+        		<level_requirements level="10"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints03"/></level_requirements>
+        
+        		<effect_group>
+        			<requirement name="ItemHasTags" tags="attStrength"/>
+        				<passive_effect name="HeadshotDamageModifier" operation="perc_add" level="2,8" value="0.1,.7" tags="head"/>
+        				<passive_effect name="HeadshotDamageModifier" operation="perc_add" level="9,10" value=".85,1" tags="head"/>
+        				<passive_effect name="DismemberChance" operation="base_add" level="2,10" value=".05,.45"/>
+        		</effect_group>
+        
+        		<effect_group>
+        			<effect_description level="1" desc_key="attStrengthRank01Desc" long_desc_key="attStrengthRank01LongDesc"/>
+        			<effect_description level="2" desc_key="attStrengthRank02Desc" long_desc_key="attStrengthRank02LongDesc"/>
+        			<effect_description level="3" desc_key="attStrengthRank03Desc" long_desc_key="attStrengthRank03LongDesc"/>
+        			<effect_description level="4" desc_key="attStrengthRank04Desc" long_desc_key="attStrengthRank04LongDesc"/>
+        			<effect_description level="5" desc_key="attStrengthRank05Desc" long_desc_key="attStrengthRank05LongDesc"/>
+        			<effect_description level="6" desc_key="attStrengthRank06Desc" long_desc_key="attStrengthRank06LongDesc"/>
+        			<effect_description level="7" desc_key="attStrengthRank07Desc" long_desc_key="attStrengthRank07LongDesc"/>
+        			<effect_description level="8" desc_key="attStrengthRank08Desc" long_desc_key="attStrengthRank08LongDesc"/>
+        			<effect_description level="9" desc_key="attStrengthRank09Desc" long_desc_key="attStrengthRank09LongDesc"/>
+        			<effect_description level="10" desc_key="attStrengthRank10Desc" long_desc_key="attStrengthRank10LongDesc"/>
+        		</effect_group>
+        	</attribute>
+        
+        	<attribute name="attFortitude" name_key="attFortitudeName" desc_key="attFortitudeDesc" icon="ui_game_symbol_add" override_cost="1,1,1,1,1,2,2,2,3,3,9999,9999,9999,9999,9999,9999,9999,9999,9999,9999">
+        		<level_requirements level="1"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="2"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="3"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="4"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="5"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="6"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="7"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="8"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="9"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints03"/></level_requirements>
+        		<level_requirements level="10"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints03"/></level_requirements>
+        
+        		<effect_group>
+        			<requirement name="ItemHasTags" tags="attFortitude"/>
+        			<requirement name="!IsAttachedToEntity"/>
+        				<passive_effect name="HeadshotDamageModifier" operation="perc_add" level="2,8" value="0.1,.7" tags="head"/>
+        				<passive_effect name="HeadshotDamageModifier" operation="perc_add" level="9,10" value=".85,1" tags="head"/>
+        				<passive_effect name="DismemberChance" operation="base_add" level="2,10" value=".05,.45"/>
+        		</effect_group>
+        
+        		<effect_group>
+        			<effect_description level="1" desc_key="attFortitudeRank01Desc" long_desc_key="attFortitudeRank01LongDesc"/>
+        			<effect_description level="2" desc_key="attFortitudeRank02Desc" long_desc_key="attFortitudeRank02LongDesc"/>
+        			<effect_description level="3" desc_key="attFortitudeRank03Desc" long_desc_key="attFortitudeRank03LongDesc"/>
+        			<effect_description level="4" desc_key="attFortitudeRank04Desc" long_desc_key="attFortitudeRank04LongDesc"/>
+        			<effect_description level="5" desc_key="attFortitudeRank05Desc" long_desc_key="attFortitudeRank05LongDesc"/>
+        			<effect_description level="6" desc_key="attFortitudeRank06Desc" long_desc_key="attFortitudeRank06LongDesc"/>
+        			<effect_description level="7" desc_key="attFortitudeRank07Desc" long_desc_key="attFortitudeRank07LongDesc"/>
+        			<effect_description level="8" desc_key="attFortitudeRank08Desc" long_desc_key="attFortitudeRank08LongDesc"/>
+        			<effect_description level="9" desc_key="attFortitudeRank09Desc" long_desc_key="attFortitudeRank09LongDesc"/>
+        			<effect_description level="10" desc_key="attFortitudeRank10Desc" long_desc_key="attFortitudeRank10LongDesc"/>
+        		</effect_group>
+        	</attribute>
+        
+        	<attribute name="attAgility" name_key="attAgilityName" desc_key="attAgilityDesc" icon="ui_game_symbol_agility" override_cost="1,1,1,1,1,2,2,2,3,3,9999,9999,9999,9999,9999,9999,9999,9999,9999,9999">
+        		<level_requirements level="1"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="2"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="3"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="4"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="5"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="6"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="7"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="8"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="9"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints03"/></level_requirements>
+        		<level_requirements level="10"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints03"/></level_requirements>
+        
+        		<effect_group>
+        			<requirement name="ItemHasTags" tags="attAgility"/>
+        				<passive_effect name="HeadshotDamageModifier" operation="perc_add" level="2,8" value="0.1,.7" tags="head"/>
+        				<passive_effect name="HeadshotDamageModifier" operation="perc_add" level="9,10" value=".85,1" tags="head"/>
+        				<passive_effect name="DismemberChance" operation="base_add" level="2,10" value=".05,.45"/>
+        		</effect_group>
+        
+        		<effect_group>
+        			<effect_description level="1" desc_key="attAgilityRank01Desc" long_desc_key="attAgilityRank01LongDesc"/>
+        			<effect_description level="2" desc_key="attAgilityRank02Desc" long_desc_key="attAgilityRank02LongDesc"/>
+        			<effect_description level="3" desc_key="attAgilityRank03Desc" long_desc_key="attAgilityRank03LongDesc"/>
+        			<effect_description level="4" desc_key="attAgilityRank04Desc" long_desc_key="attAgilityRank04LongDesc"/>
+        			<effect_description level="5" desc_key="attAgilityRank05Desc" long_desc_key="attAgilityRank05LongDesc"/>
+        			<effect_description level="6" desc_key="attAgilityRank06Desc" long_desc_key="attAgilityRank06LongDesc"/>
+        			<effect_description level="7" desc_key="attAgilityRank07Desc" long_desc_key="attAgilityRank07LongDesc"/>
+        			<effect_description level="8" desc_key="attAgilityRank08Desc" long_desc_key="attAgilityRank08LongDesc"/>
+        			<effect_description level="9" desc_key="attAgilityRank09Desc" long_desc_key="attAgilityRank09LongDesc"/>
+        			<effect_description level="10" desc_key="attAgilityRank10Desc" long_desc_key="attAgilityRank10LongDesc"/>
+        		</effect_group>
+        	</attribute>
+        
+        	<attribute name="attIntellect" name_key="attIntellectName" desc_key="attIntellectDesc" icon="ui_game_symbol_intellect" override_cost="1,1,1,1,1,2,2,2,3,3,9999,9999,9999,9999,9999,9999,9999,9999,9999,9999">
+        		<level_requirements level="1"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="2"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="3"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="4"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="5"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints01"/></level_requirements>
+        		<level_requirements level="6"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="7"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="8"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints02"/></level_requirements>
+        		<level_requirements level="9"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints03"/></level_requirements>
+        		<level_requirements level="10"><requirement name="PlayerLevel" operation="GTE" value="1" desc_key="reqGenericPoints03"/></level_requirements>
+        
+        		<effect_group>
+        			<requirement name="ItemHasTags" tags="attIntellect"/>
+        				<passive_effect name="HeadshotDamageModifier" operation="perc_add" level="2,8" value="0.1,.7" tags="head"/>
+        				<passive_effect name="HeadshotDamageModifier" operation="perc_add" level="9,10" value=".85,1" tags="head"/>
+        				<passive_effect name="DismemberChance" operation="base_add" level="2,10" value=".05,.45"/>
+        		</effect_group>
+        
+        		<effect_group>
+        			<effect_description level="1" desc_key="attIntellectRank1Desc" long_desc_key="attIntellectRank1LongDesc"/>
+        			<effect_description level="2" desc_key="attIntellectRank2Desc" long_desc_key="attIntellectRank2LongDesc"/>
+        			<effect_description level="3" desc_key="attIntellectRank3Desc" long_desc_key="attIntellectRank3LongDesc"/>
+        			<effect_description level="4" desc_key="attIntellectRank4Desc" long_desc_key="attIntellectRank4LongDesc"/>
+        			<effect_description level="5" desc_key="attIntellectRank5Desc" long_desc_key="attIntellectRank5LongDesc"/>
+        			<effect_description level="6" desc_key="attIntellectRank6Desc" long_desc_key="attIntellectRank6LongDesc"/>
+        			<effect_description level="7" desc_key="attIntellectRank7Desc" long_desc_key="attIntellectRank7LongDesc"/>
+        			<effect_description level="8" desc_key="attIntellectRank8Desc" long_desc_key="attIntellectRank8LongDesc"/>
+        			<effect_description level="9" desc_key="attIntellectRank9Desc" long_desc_key="attIntellectRank9LongDesc"/>
+        			<effect_description level="10" desc_key="attIntellectRank10Desc" long_desc_key="attIntellectRank10LongDesc"/>
+        		</effect_group>
+        	</attribute>
+    </insertBefore>
     <append xpath="/progression/attributes/attribute[@name='attPerception']">
-        <level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqGenericPoints03"/></level_requirements>
-        <level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqGenericPoints03"/></level_requirements>
-        <level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqGenericPoints03"/></level_requirements>
-        <level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqGenericPoints03"/></level_requirements>
-        <level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqGenericPoints03"/></level_requirements>
-        <level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqGenericPoints03"/></level_requirements>
-        <level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqGenericPoints03"/></level_requirements>
-        <level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqGenericPoints03"/></level_requirements>
-        <level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqGenericPoints03"/></level_requirements>
-        <level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqGenericPoints03"/></level_requirements>
-        <effect_group><requirement name="ItemHasTags" tags="attPerception"/><passive_effect name="HeadshotDamageModifier" operation="perc_add" level="11,20" value="1.1,2.9" tags="head"/><passive_effect name="DismemberChance" operation="base_add" level="11,20" value=".55,1.45"/></effect_group>
+        <level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements>
+        <effect_group>
+            <requirement name="ItemHasTags" tags="attPerception"/>
+            
+            <passive_effect name="HeadshotDamageModifier" operation="perc_add" level="11,20" value="1.1,2.0" tags="head"/>
+            <passive_effect name="DismemberChance" operation="base_add" level="11,20" value=".55,1.0"/>
+        </effect_group>
+        <effect_group><effect_description level="11" desc_key="attPerceptionRank11Desc" long_desc_key="attPerceptionRank11LongDesc"/><effect_description level="12" desc_key="attPerceptionRank12Desc" long_desc_key="attPerceptionRank12LongDesc"/><effect_description level="13" desc_key="attPerceptionRank13Desc" long_desc_key="attPerceptionRank13LongDesc"/><effect_description level="14" desc_key="attPerceptionRank14Desc" long_desc_key="attPerceptionRank14LongDesc"/><effect_description level="15" desc_key="attPerceptionRank15Desc" long_desc_key="attPerceptionRank15LongDesc"/><effect_description level="16" desc_key="attPerceptionRank16Desc" long_desc_key="attPerceptionRank16LongDesc"/><effect_description level="17" desc_key="attPerceptionRank17Desc" long_desc_key="attPerceptionRank17LongDesc"/><effect_description level="18" desc_key="attPerceptionRank18Desc" long_desc_key="attPerceptionRank18LongDesc"/><effect_description level="19" desc_key="attPerceptionRank19Desc" long_desc_key="attPerceptionRank19LongDesc"/><effect_description level="20" desc_key="attPerceptionRank20Desc" long_desc_key="attPerceptionRank20LongDesc"/></effect_group>
     </append>
-    <!-- Reuse the same extension requirements and descriptions for the other four attributes. -->
-    <append xpath="/progression/attributes/attribute[@name='attStrength']"><level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><effect_group><requirement name="ItemHasTags" tags="attStrength"/><passive_effect name="HeadshotDamageModifier" operation="perc_add" level="11,20" value="1.1,2.9" tags="head"/><passive_effect name="DismemberChance" operation="base_add" level="11,20" value=".55,1.45"/></effect_group></append>
-    <append xpath="/progression/attributes/attribute[@name='attFortitude']"><level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><effect_group><requirement name="ItemHasTags" tags="attFortitude"/><requirement name="!IsAttachedToEntity"/><passive_effect name="HeadshotDamageModifier" operation="perc_add" level="11,20" value="1.1,2.9" tags="head"/><passive_effect name="DismemberChance" operation="base_add" level="11,20" value=".55,1.45"/></effect_group></append>
-    <append xpath="/progression/attributes/attribute[@name='attAgility']"><level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><effect_group><requirement name="ItemHasTags" tags="attAgility"/><passive_effect name="HeadshotDamageModifier" operation="perc_add" level="11,20" value="1.1,2.9" tags="head"/><passive_effect name="DismemberChance" operation="base_add" level="11,20" value=".55,1.45"/></effect_group></append>
-    <append xpath="/progression/attributes/attribute[@name='attIntellect']"><level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><effect_group><requirement name="ItemHasTags" tags="attIntellect"/><passive_effect name="HeadshotDamageModifier" operation="perc_add" level="11,20" value="1.1,2.9" tags="head"/><passive_effect name="DismemberChance" operation="base_add" level="11,20" value=".55,1.45"/></effect_group></append>
-    <remove xpath="/progression/attributes/attribute[@name='attPerception']/level_requirements[@level&gt;='11']"/>
-    <insertBefore xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[1]"><level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements></insertBefore>
-    <remove xpath="/progression/attributes/attribute[@name='attStrength']/level_requirements[@level&gt;='11']"/>
-    <insertBefore xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[1]"><level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements></insertBefore>
-    <remove xpath="/progression/attributes/attribute[@name='attFortitude']/level_requirements[@level&gt;='11']"/>
-    <insertBefore xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[1]"><level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements></insertBefore>
-    <remove xpath="/progression/attributes/attribute[@name='attAgility']/level_requirements[@level&gt;='11']"/>
-    <insertBefore xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[1]"><level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements></insertBefore>
-    <remove xpath="/progression/attributes/attribute[@name='attIntellect']/level_requirements[@level&gt;='11']"/>
-    <insertBefore xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[1]"><level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999"/></level_requirements></insertBefore>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]/effect_description[@level='11']/@desc_key">attAgilityRank11Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]/effect_description[@level='12']/@desc_key">attAgilityRank12Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]/effect_description[@level='13']/@desc_key">attAgilityRank13Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]/effect_description[@level='14']/@desc_key">attAgilityRank14Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]/effect_description[@level='15']/@desc_key">attAgilityRank15Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]/effect_description[@level='16']/@desc_key">attAgilityRank16Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]/effect_description[@level='17']/@desc_key">attAgilityRank17Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]/effect_description[@level='18']/@desc_key">attAgilityRank18Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]/effect_description[@level='19']/@desc_key">attAgilityRank19Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/effect_group[last()]/effect_description[@level='20']/@desc_key">attAgilityRank20Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]/effect_description[@level='11']/@desc_key">attFortitudeRank11Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]/effect_description[@level='12']/@desc_key">attFortitudeRank12Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]/effect_description[@level='13']/@desc_key">attFortitudeRank13Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]/effect_description[@level='14']/@desc_key">attFortitudeRank14Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]/effect_description[@level='15']/@desc_key">attFortitudeRank15Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]/effect_description[@level='16']/@desc_key">attFortitudeRank16Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]/effect_description[@level='17']/@desc_key">attFortitudeRank17Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]/effect_description[@level='18']/@desc_key">attFortitudeRank18Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]/effect_description[@level='19']/@desc_key">attFortitudeRank19Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/effect_group[last()]/effect_description[@level='20']/@desc_key">attFortitudeRank20Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]/effect_description[@level='11']/@desc_key">attIntellectRank11Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]/effect_description[@level='12']/@desc_key">attIntellectRank12Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]/effect_description[@level='13']/@desc_key">attIntellectRank13Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]/effect_description[@level='14']/@desc_key">attIntellectRank14Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]/effect_description[@level='15']/@desc_key">attIntellectRank15Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]/effect_description[@level='16']/@desc_key">attIntellectRank16Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]/effect_description[@level='17']/@desc_key">attIntellectRank17Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]/effect_description[@level='18']/@desc_key">attIntellectRank18Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]/effect_description[@level='19']/@desc_key">attIntellectRank19Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/effect_group[last()]/effect_description[@level='20']/@desc_key">attIntellectRank20Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[last()]/effect_description[@level='11']/@desc_key">attPerceptionRank11Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[last()]/effect_description[@level='12']/@desc_key">attPerceptionRank12Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[last()]/effect_description[@level='13']/@desc_key">attPerceptionRank13Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[last()]/effect_description[@level='14']/@desc_key">attPerceptionRank14Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[last()]/effect_description[@level='15']/@desc_key">attPerceptionRank15Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[last()]/effect_description[@level='16']/@desc_key">attPerceptionRank16Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[last()]/effect_description[@level='17']/@desc_key">attPerceptionRank17Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[last()]/effect_description[@level='18']/@desc_key">attPerceptionRank18Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[last()]/effect_description[@level='19']/@desc_key">attPerceptionRank19Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/effect_group[last()]/effect_description[@level='20']/@desc_key">attPerceptionRank20Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]/effect_description[@level='11']/@desc_key">attStrengthRank11Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]/effect_description[@level='12']/@desc_key">attStrengthRank12Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]/effect_description[@level='13']/@desc_key">attStrengthRank13Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]/effect_description[@level='14']/@desc_key">attStrengthRank14Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]/effect_description[@level='15']/@desc_key">attStrengthRank15Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]/effect_description[@level='16']/@desc_key">attStrengthRank16Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]/effect_description[@level='17']/@desc_key">attStrengthRank17Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]/effect_description[@level='18']/@desc_key">attStrengthRank18Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]/effect_description[@level='19']/@desc_key">attStrengthRank19Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/effect_group[last()]/effect_description[@level='20']/@desc_key">attStrengthRank20Desc</set>
-    <set xpath="/progression/attributes/attribute[@name='attAgility']/level_requirements/requirement[@value='9999']/@desc_key">reqAttributeLevel11Plus</set>
-    <set xpath="/progression/attributes/attribute[@name='attFortitude']/level_requirements/requirement[@value='9999']/@desc_key">reqAttributeLevel11Plus</set>
-    <set xpath="/progression/attributes/attribute[@name='attIntellect']/level_requirements/requirement[@value='9999']/@desc_key">reqAttributeLevel11Plus</set>
-    <set xpath="/progression/attributes/attribute[@name='attPerception']/level_requirements/requirement[@value='9999']/@desc_key">reqAttributeLevel11Plus</set>
-    <set xpath="/progression/attributes/attribute[@name='attStrength']/level_requirements/requirement[@value='9999']/@desc_key">reqAttributeLevel11Plus</set>
+    <append xpath="/progression/attributes/attribute[@name='attStrength']">
+        <level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements>
+        <effect_group>
+            <requirement name="ItemHasTags" tags="attStrength"/>
+            
+            <passive_effect name="HeadshotDamageModifier" operation="perc_add" level="11,20" value="1.1,2.0" tags="head"/>
+            <passive_effect name="DismemberChance" operation="base_add" level="11,20" value=".55,1.0"/>
+        </effect_group>
+        <effect_group><effect_description level="11" desc_key="attStrengthRank11Desc" long_desc_key="attStrengthRank11LongDesc"/><effect_description level="12" desc_key="attStrengthRank12Desc" long_desc_key="attStrengthRank12LongDesc"/><effect_description level="13" desc_key="attStrengthRank13Desc" long_desc_key="attStrengthRank13LongDesc"/><effect_description level="14" desc_key="attStrengthRank14Desc" long_desc_key="attStrengthRank14LongDesc"/><effect_description level="15" desc_key="attStrengthRank15Desc" long_desc_key="attStrengthRank15LongDesc"/><effect_description level="16" desc_key="attStrengthRank16Desc" long_desc_key="attStrengthRank16LongDesc"/><effect_description level="17" desc_key="attStrengthRank17Desc" long_desc_key="attStrengthRank17LongDesc"/><effect_description level="18" desc_key="attStrengthRank18Desc" long_desc_key="attStrengthRank18LongDesc"/><effect_description level="19" desc_key="attStrengthRank19Desc" long_desc_key="attStrengthRank19LongDesc"/><effect_description level="20" desc_key="attStrengthRank20Desc" long_desc_key="attStrengthRank20LongDesc"/></effect_group>
+    </append>
+    <append xpath="/progression/attributes/attribute[@name='attFortitude']">
+        <level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements>
+        <effect_group>
+            <requirement name="ItemHasTags" tags="attFortitude"/>
+            <requirement name="!IsAttachedToEntity"/>
+            <passive_effect name="HeadshotDamageModifier" operation="perc_add" level="11,20" value="1.1,2.0" tags="head"/>
+            <passive_effect name="DismemberChance" operation="base_add" level="11,20" value=".55,1.0"/>
+        </effect_group>
+        <effect_group><effect_description level="11" desc_key="attFortitudeRank11Desc" long_desc_key="attFortitudeRank11LongDesc"/><effect_description level="12" desc_key="attFortitudeRank12Desc" long_desc_key="attFortitudeRank12LongDesc"/><effect_description level="13" desc_key="attFortitudeRank13Desc" long_desc_key="attFortitudeRank13LongDesc"/><effect_description level="14" desc_key="attFortitudeRank14Desc" long_desc_key="attFortitudeRank14LongDesc"/><effect_description level="15" desc_key="attFortitudeRank15Desc" long_desc_key="attFortitudeRank15LongDesc"/><effect_description level="16" desc_key="attFortitudeRank16Desc" long_desc_key="attFortitudeRank16LongDesc"/><effect_description level="17" desc_key="attFortitudeRank17Desc" long_desc_key="attFortitudeRank17LongDesc"/><effect_description level="18" desc_key="attFortitudeRank18Desc" long_desc_key="attFortitudeRank18LongDesc"/><effect_description level="19" desc_key="attFortitudeRank19Desc" long_desc_key="attFortitudeRank19LongDesc"/><effect_description level="20" desc_key="attFortitudeRank20Desc" long_desc_key="attFortitudeRank20LongDesc"/></effect_group>
+    </append>
+    <append xpath="/progression/attributes/attribute[@name='attAgility']">
+        <level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements>
+        <effect_group>
+            <requirement name="ItemHasTags" tags="attAgility"/>
+            
+            <passive_effect name="HeadshotDamageModifier" operation="perc_add" level="11,20" value="1.1,2.0" tags="head"/>
+            <passive_effect name="DismemberChance" operation="base_add" level="11,20" value=".55,1.0"/>
+        </effect_group>
+        <effect_group><effect_description level="11" desc_key="attAgilityRank11Desc" long_desc_key="attAgilityRank11LongDesc"/><effect_description level="12" desc_key="attAgilityRank12Desc" long_desc_key="attAgilityRank12LongDesc"/><effect_description level="13" desc_key="attAgilityRank13Desc" long_desc_key="attAgilityRank13LongDesc"/><effect_description level="14" desc_key="attAgilityRank14Desc" long_desc_key="attAgilityRank14LongDesc"/><effect_description level="15" desc_key="attAgilityRank15Desc" long_desc_key="attAgilityRank15LongDesc"/><effect_description level="16" desc_key="attAgilityRank16Desc" long_desc_key="attAgilityRank16LongDesc"/><effect_description level="17" desc_key="attAgilityRank17Desc" long_desc_key="attAgilityRank17LongDesc"/><effect_description level="18" desc_key="attAgilityRank18Desc" long_desc_key="attAgilityRank18LongDesc"/><effect_description level="19" desc_key="attAgilityRank19Desc" long_desc_key="attAgilityRank19LongDesc"/><effect_description level="20" desc_key="attAgilityRank20Desc" long_desc_key="attAgilityRank20LongDesc"/></effect_group>
+    </append>
+    <append xpath="/progression/attributes/attribute[@name='attIntellect']">
+        <level_requirements level="11"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="12"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="13"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="14"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="15"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="16"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="17"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="18"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="19"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements><level_requirements level="20"><requirement name="PlayerLevel" operation="GTE" value="9999" desc_key="reqAttributeLevel11Plus"/></level_requirements>
+        <effect_group>
+            <requirement name="ItemHasTags" tags="attIntellect"/>
+            
+            <passive_effect name="HeadshotDamageModifier" operation="perc_add" level="11,20" value="1.1,2.0" tags="head"/>
+            <passive_effect name="DismemberChance" operation="base_add" level="11,20" value=".55,1.0"/>
+        </effect_group>
+        <effect_group><effect_description level="11" desc_key="attIntellectRank11Desc" long_desc_key="attIntellectRank11LongDesc"/><effect_description level="12" desc_key="attIntellectRank12Desc" long_desc_key="attIntellectRank12LongDesc"/><effect_description level="13" desc_key="attIntellectRank13Desc" long_desc_key="attIntellectRank13LongDesc"/><effect_description level="14" desc_key="attIntellectRank14Desc" long_desc_key="attIntellectRank14LongDesc"/><effect_description level="15" desc_key="attIntellectRank15Desc" long_desc_key="attIntellectRank15LongDesc"/><effect_description level="16" desc_key="attIntellectRank16Desc" long_desc_key="attIntellectRank16LongDesc"/><effect_description level="17" desc_key="attIntellectRank17Desc" long_desc_key="attIntellectRank17LongDesc"/><effect_description level="18" desc_key="attIntellectRank18Desc" long_desc_key="attIntellectRank18LongDesc"/><effect_description level="19" desc_key="attIntellectRank19Desc" long_desc_key="attIntellectRank19LongDesc"/><effect_description level="20" desc_key="attIntellectRank20Desc" long_desc_key="attIntellectRank20LongDesc"/></effect_group>
+    </append>
+    <set xpath="/progression/attributes/attribute[@name='attPerception']/@override_cost">1,1,1,1,1,2,2,2,3,3,9999,9999,9999,9999,9999,9999,9999,9999,9999,9999</set>
+    <set xpath="/progression/attributes/attribute[@name='attPerception']/level_requirements/requirement[@value='9999']/@value">1</set>
+    <set xpath="/progression/attributes/attribute[@name='attStrength']/@override_cost">1,1,1,1,1,2,2,2,3,3,9999,9999,9999,9999,9999,9999,9999,9999,9999,9999</set>
+    <set xpath="/progression/attributes/attribute[@name='attStrength']/level_requirements/requirement[@value='9999']/@value">1</set>
+    <set xpath="/progression/attributes/attribute[@name='attFortitude']/@override_cost">1,1,1,1,1,2,2,2,3,3,9999,9999,9999,9999,9999,9999,9999,9999,9999,9999</set>
+    <set xpath="/progression/attributes/attribute[@name='attFortitude']/level_requirements/requirement[@value='9999']/@value">1</set>
+    <set xpath="/progression/attributes/attribute[@name='attAgility']/@override_cost">1,1,1,1,1,2,2,2,3,3,9999,9999,9999,9999,9999,9999,9999,9999,9999,9999</set>
+    <set xpath="/progression/attributes/attribute[@name='attAgility']/level_requirements/requirement[@value='9999']/@value">1</set>
+    <set xpath="/progression/attributes/attribute[@name='attIntellect']/@override_cost">1,1,1,1,1,2,2,2,3,3,9999,9999,9999,9999,9999,9999,9999,9999,9999,9999</set>
+    <set xpath="/progression/attributes/attribute[@name='attIntellect']/level_requirements/requirement[@value='9999']/@value">1</set>
 </configs>

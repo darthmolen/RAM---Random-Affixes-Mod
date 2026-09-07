@@ -23,9 +23,11 @@ namespace WeaponAffixesProject.HarmonyPatches
         private static void Postfix(XUiC_CombineGrid __instance, CombineAffixCost.PendingCost __state)
         {
             // Vanilla bails without clearing anything when the player's inventory is full, so
-            // an empty result plus empty merge slots is what a completed combine looks like.
+            // an empty result plus both merge slots empty is what a completed combine looks like.
             // Only bill them for one that actually went through.
-            if (!__instance.result.IsEmpty() || !__instance.merge1.ItemStack.IsEmpty())
+            if (__instance.result == null || !__instance.result.IsEmpty())
+                return;
+            if (!__instance.merge1.ItemStack.IsEmpty() || !__instance.merge2.ItemStack.IsEmpty())
                 return;
 
             CombineAffixCost.Commit(__instance, __state);

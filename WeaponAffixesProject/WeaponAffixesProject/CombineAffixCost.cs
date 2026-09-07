@@ -91,17 +91,17 @@ internal static class CombineAffixCost
 		{
 			xui.CollectedItemList?.RemoveItemStack(cost);
 		}
-		AffixUtils.ApplyAffixTokenUseEvents("affixSwapToken", pending.ImportedAffixes);
+		AffixUtils.ApplyAffixTokenUseEvents(SwapTokenName, pending.ImportedAffixes);
 		for (int i = 0; i < pending.ImportedMythicAffixes; i++)
 		{
-			AffixUtils.ApplyQuestEventManagerUseItem("affixModBonusKills7");
+			AffixUtils.ApplyQuestEventManagerUseItem(TransferMythicChallengeEvent);
 		}
 	}
 
 	private static List<ItemStack> BuildCosts(ItemValue itemValue, int importedAffixes)
 	{
 		List<ItemStack> costs = new List<ItemStack>();
-		ItemClass swapToken = ItemClass.GetItemClass("affixSwapToken");
+		ItemClass swapToken = ItemClass.GetItemClass(SwapTokenName);
 		if (swapToken != null)
 		{
 			costs.Add(new ItemStack(new ItemValue(swapToken.Id), importedAffixes));

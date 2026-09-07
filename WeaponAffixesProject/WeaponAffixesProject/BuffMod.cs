@@ -34,7 +34,7 @@ namespace WeaponBuffMod
             int applied = 0;
             int skipped = 0;
 
-            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
+            foreach (Type type in GetLoadableTypes(Assembly.GetExecutingAssembly()))
             {
                 try
                 {
@@ -52,6 +52,25 @@ namespace WeaponBuffMod
                 Log.Warning($"[RAM] {applied} patch class(es) applied, {skipped} skipped — some features are disabled.");
             else
                 Log.Out($"[RAM] {applied} patch class(es) applied.");
+        }
+
+        /// <summary>
+        /// GetTypes() throws ReflectionTypeLoadException outright if any single type fails to
+        /// load — which is exactly what a game update removing an API does, and it would abort
+        /// the pass before any per-class handler could report it. Keep the types that did load.
+        /// </summary>
+        private static Type[] GetLoadableTypes(Assembly assembly)
+        {
+            try
+            {
+                return assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                Type[] loaded = Array.FindAll(e.Types, t => t != null);
+                Log.Warning($"[RAM] {e.Types.Length - loaded.Length} type(s) failed to load; patching the remaining {loaded.Length}.");
+                return loaded;
+            }
         }
     }
 }

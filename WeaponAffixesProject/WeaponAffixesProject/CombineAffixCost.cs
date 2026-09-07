@@ -9,23 +9,33 @@ internal static class CombineAffixCost
 
 	private const string TransferMythicChallengeEvent = "affixModBonusKills7";
 
-	internal static bool CanTakeResult(XUiC_CombineGrid grid)
+	/// <summary>
+	/// A cost worked out from the grid before the combine runs, so it can be charged
+	/// afterwards once the result has actually reached the player's inventory.
+	/// </summary>
+	internal sealed class PendingCost
 	{
-		return CheckResultCosts(grid, payCosts: false);
+		internal List<ItemStack> Costs;
+
+		internal int ImportedAffixes;
+
+		internal int ImportedMythicAffixes;
 	}
 
-	internal static bool TryPayForResultPickup(XUiC_CombineGrid grid)
+	/// <summary>
+	/// Works out what taking the current result would cost and checks the player can pay it.
+	/// Returns false (after showing a tooltip) when they cannot, in which case the combine
+	/// must be blocked. <paramref name="pending" /> is null when nothing was imported from
+	/// item B and the combine is therefore free.
+	/// </summary>
+	internal static bool TryReserve(XUiC_CombineGrid grid, out PendingCost pending)
 	{
-		return CheckResultCosts(grid, payCosts: true);
-	}
-
-	private static bool CheckResultCosts(XUiC_CombineGrid grid, bool payCosts)
-	{
+		pending = null;
 		if (grid == null)
 		{
 			return true;
 		}
-		ItemStack result = ((grid.result1.ItemStack != null && !grid.result1.ItemStack.IsEmpty()) ? grid.result1.ItemStack : grid.lastResult);
+		ItemStack result = grid.result;
 		if (result == null || result.IsEmpty())
 		{
 			return true;
@@ -51,21 +61,41 @@ internal static class CombineAffixCost
 			ShowMissingCost(player, xui, missing);
 			return false;
 		}
-		if (!payCosts)
+		pending = new PendingCost
 		{
-			return true;
+			Costs = costs,
+			ImportedAffixes = importedAffixes,
+			ImportedMythicAffixes = importedMythicAffixes
+		};
+		return true;
+	}
+
+	/// <summary>
+	/// Charges a cost previously reserved by <see cref="TryReserve" />. Only call this once
+	/// the combine has actually completed, so a failed combine never bills the player.
+	/// </summary>
+	internal static void Commit(XUiC_CombineGrid grid, PendingCost pending)
+	{
+		if (grid == null || pending == null || pending.Costs == null)
+		{
+			return;
 		}
-		inventory.RemoveItems(costs);
-		foreach (ItemStack cost in costs)
+		XUi xui = grid.xui;
+		XUiM_PlayerInventory inventory = xui?.PlayerInventory;
+		if (inventory == null)
+		{
+			return;
+		}
+		inventory.RemoveItems(pending.Costs);
+		foreach (ItemStack cost in pending.Costs)
 		{
 			xui.CollectedItemList?.RemoveItemStack(cost);
 		}
-		AffixUtils.ApplyAffixTokenUseEvents("affixSwapToken", importedAffixes);
-		for (int i = 0; i < importedMythicAffixes; i++)
+		AffixUtils.ApplyAffixTokenUseEvents("affixSwapToken", pending.ImportedAffixes);
+		for (int i = 0; i < pending.ImportedMythicAffixes; i++)
 		{
 			AffixUtils.ApplyQuestEventManagerUseItem("affixModBonusKills7");
 		}
-		return true;
 	}
 
 	private static List<ItemStack> BuildCosts(ItemValue itemValue, int importedAffixes)

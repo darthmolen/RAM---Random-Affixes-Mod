@@ -12,7 +12,7 @@ namespace WeaponAffixesProject.HarmonyPatches
             {
                 if (__instance.merge1.ItemStack.IsEmpty() || __instance.merge2.ItemStack.IsEmpty() || __instance.merge1.ItemStack.itemValue.type != __instance.merge2.ItemStack.itemValue.type)
                 {
-                    SetResultPreview(__instance, ItemStack.Empty);
+                    __instance.SetResult(ItemStack.Empty);
                     return false;
                 }
 
@@ -20,7 +20,7 @@ namespace WeaponAffixesProject.HarmonyPatches
                 ItemValue itemValue2 = __instance.merge2.ItemStack.itemValue;
                 if (itemValue.HasMods() && itemValue2.HasMods())
                 {
-                    SetResultPreview(__instance, ItemStack.Empty);
+                    __instance.SetResult(ItemStack.Empty);
                     GameManager.ShowTooltip(__instance.xui.playerUI.entityPlayer, string.Format(Localization.Get("ttCombineRemoveMods", false, null), 0), string.Empty, "ui_denied", null, false, false, 0f);
                     return false;
                 }
@@ -33,18 +33,9 @@ namespace WeaponAffixesProject.HarmonyPatches
                     itemValue2);
 
                 itemStack.itemValue.Meta = 0;
-                SetResultPreview(__instance, itemStack);
+                __instance.SetResult(itemStack);
 
                 return false;
-            }
-
-            private static void SetResultPreview(XUiC_CombineGrid grid, ItemStack itemStack)
-            {
-                grid.result1.SlotChangedEvent -= grid.Result1_SlotChangedEvent;
-                grid.result1.ItemStack = itemStack;
-                grid.result1.HiddenLock = true;
-                grid.result1.SlotChangedEvent += grid.Result1_SlotChangedEvent;
-                grid.lastResult = itemStack == null || itemStack.IsEmpty() ? ItemStack.Empty : itemStack;
             }
         }
     }

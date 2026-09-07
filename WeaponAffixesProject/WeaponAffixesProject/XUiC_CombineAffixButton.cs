@@ -75,41 +75,13 @@ public class XUiC_CombineAffixButton : XUiController
     {
         XUiC_CombineWindowGroup group = GetParentByType<XUiC_CombineWindowGroup>();
         XUiC_CombineGrid grid = group?.GetChildByType<XUiC_CombineGrid>();
-        if (grid == null || grid.lastResult == null || grid.lastResult.IsEmpty())
+        if (grid == null || grid.result == null || grid.result.IsEmpty())
             return;
 
-        EntityPlayerLocal player = xui?.playerUI?.entityPlayer;
-        XUiM_PlayerInventory inventory = xui?.PlayerInventory;
-        if (player == null || inventory == null)
-            return;
-
-        if (!WeaponAffixesProject.CombineAffixCost.CanTakeResult(grid))
-            return;
-
-        ItemStack result = grid.lastResult.Clone();
-        if (!inventory.AddItemNoPartial(result, true))
-        {
-            GameManager.ShowTooltip(player, Localization.Get("xuiInventoryFull"), string.Empty, "ui/ui_denied");
-            return;
-        }
-
-        if (!WeaponAffixesProject.CombineAffixCost.TryPayForResultPickup(grid))
-            return;
-
-        ClearCombineGrid(grid);
-        WeaponAffixesProject.CombineAffixSelectionState.Clear(group);
-    }
-
-    private static void ClearCombineGrid(XUiC_CombineGrid grid)
-    {
-        grid.merge1.ItemStack = ItemStack.Empty;
-        grid.merge2.ItemStack = ItemStack.Empty;
-
-        grid.result1.SlotChangedEvent -= grid.Result1_SlotChangedEvent;
-        grid.result1.ItemStack = ItemStack.Empty;
-        grid.result1.HiddenLock = true;
-        grid.result1.SlotChangedEvent += grid.Result1_SlotChangedEvent;
-
-        grid.lastResult = ItemStack.Empty;
+        // As of V3.2 the grid owns the whole take-the-result flow — inventory transfer, ammo
+        // removal, XP, clearing the slots and the station sound. Route this button through it so
+        // it stays identical to the vanilla Combine button; the affix cost is charged by the
+        // CombineTakeResultCost patch that wraps it.
+        grid.BtnCombine_OnPressed(this, 0);
     }
 }

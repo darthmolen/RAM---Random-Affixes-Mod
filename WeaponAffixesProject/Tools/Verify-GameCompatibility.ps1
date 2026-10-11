@@ -8,18 +8,30 @@ $ErrorActionPreference = 'Stop'
 # Resolution order matches the csproj: -GameDir, then SDTD_GAMEDIR, then the known install
 # locations. The first candidate is the path this script used to default to, so it keeps
 # working with no arguments on that machine.
+#
+# SDTD_GAMEDIR is authoritative when set, exactly as the csproj treats it: a wrong value has to
+# fail, not fall through. Falling back would verify one installation while the build compiled
+# against another, and agreeing with the build is the whole point of the check.
+function Test-GameDir($path) {
+    # Interpolated rather than Join-Path, and -ErrorAction SilentlyContinue, because probing a
+    # candidate on a drive this machine does not have is a throw under $ErrorActionPreference.
+    return $path -and (Test-Path -LiteralPath "$path\7DaysToDie_Data\Managed\Assembly-CSharp.dll" -ErrorAction SilentlyContinue)
+}
+if (-not $GameDir -and $env:SDTD_GAMEDIR) {
+    $GameDir = $env:SDTD_GAMEDIR
+    if (-not (Test-GameDir $GameDir)) {
+        throw "SDTD_GAMEDIR is set to '$GameDir' but Assembly-CSharp.dll is not there. The build would fail the same way."
+    }
+}
 if (-not $GameDir) {
-    $candidates = @(
-        $env:SDTD_GAMEDIR,
+    $GameDir = @(
         'D:\SteamLibrary\steamapps\common\7 Days To Die',
         'C:\Program Files (x86)\Steam\steamapps\common\7 Days To Die',
         'C:\Steam\steamapps\common\7 Days To Die'
-    )
-    # Interpolated rather than Join-Path, and -ErrorAction SilentlyContinue, because probing a
-    # candidate on a drive this machine does not have is a throw under $ErrorActionPreference.
-    $GameDir = $candidates | Where-Object { $_ -and (Test-Path -LiteralPath "$_\7DaysToDie_Data\Managed\Assembly-CSharp.dll" -ErrorAction SilentlyContinue) } | Select-Object -First 1
+    ) | Where-Object { Test-GameDir $_ } | Select-Object -First 1
 }
 if (-not $GameDir) { throw 'Could not find the game. Pass -GameDir or set SDTD_GAMEDIR.' }
+if (-not (Test-GameDir $GameDir)) { throw "Assembly-CSharp.dll not found under GameDir '$GameDir'." }
 
 # Debug, Release, and the DLL that ships in the repo — whichever was built last. Taking them in
 # a fixed order silently verifies a stale bin\Debug left over from an older branch and reports
@@ -92,18 +104,29 @@ $injected = @('__instance', '__result', '__state', '__originalMethod', '__runOri
 function Read-PatchAttributes($attributes) {
     $targetType = $null
     $targetMethod = $null
+    $argumentTypes = $null
     foreach ($attr in $attributes) {
         if ($attr.AttributeType.FullName -ne 'HarmonyLib.HarmonyPatch') { continue }
         foreach ($arg in $attr.ConstructorArguments) {
             if ($arg.Type.FullName -eq 'System.Type') { $targetType = $arg.Value }
             if ($arg.Type.FullName -eq 'System.String') { $targetMethod = $arg.Value }
+            # [HarmonyPatch(typeof(X), "Y", new Type[] { ... })] names one specific overload.
+            # Without it an overload-targeted patch is only matched by name, so the declared
+            # overload can disappear while a different one keeps the check passing.
+            if ($arg.Type.FullName -eq 'System.Type[]' -and $null -ne $arg.Value) {
+                $argumentTypes = @($arg.Value | ForEach-Object { $_.Value })
+            }
         }
     }
-    return [pscustomobject]@{ TargetType = $targetType; TargetMethod = $targetMethod }
+    return [pscustomobject]@{ TargetType = $targetType; TargetMethod = $targetMethod; ArgumentTypes = $argumentTypes }
 }
 
-function Check-Patch($targetType, $targetMethod, $patchMethod) {
+function Check-Patch($info, $patchMethod, $checkParameterNames) {
+    $targetType = $info.TargetType
+    $targetMethod = $info.TargetMethod
     if ($null -eq $targetType -or $null -eq $targetMethod) { return }
+
+    $label = "$targetType::$targetMethod"
     $definition = $targetType.Resolve()
     $targets = @()
     while ($null -ne $definition) {
@@ -113,25 +136,44 @@ function Check-Patch($targetType, $targetMethod, $patchMethod) {
         $definition = $definition.BaseType.Resolve()
     }
     if ($targets.Count -eq 0) {
-        $failures.Add("Missing Harmony target: $targetType::$targetMethod")
+        $failures.Add("Missing Harmony target: $label")
         return
     }
+
+    if ($null -ne $info.ArgumentTypes) {
+        $wanted = @($info.ArgumentTypes | ForEach-Object { $_.FullName })
+        $label = "$label($($wanted -join ', '))"
+        $targets = @($targets | Where-Object {
+            $actual = @($_.Parameters | ForEach-Object { $_.ParameterType.FullName })
+            $actual.Count -eq $wanted.Count -and @(Compare-Object $actual $wanted -SyncWindow 0).Count -eq 0
+        })
+        if ($targets.Count -eq 0) {
+            $failures.Add("Missing Harmony overload: $label")
+            return
+        }
+    }
+
     if ($null -eq $patchMethod) { return }
+
+    # Reverse patches declare the original's signature and are bound positionally, so their
+    # parameter names are the author's choice and mean nothing to Harmony. Only prefix/postfix
+    # style patches get names matched against the target.
+    if (-not $checkParameterNames) { return }
 
     # A parameter name that matches nothing on the target is silently passed as null by Harmony,
     # so a renamed game parameter turns into a quiet behaviour change rather than an error.
-    # With overloads a name only has to match one of them.
+    # With overloads a name only has to match one of the candidates left above.
     $targetParams = @($targets | ForEach-Object { $_.Parameters.Name }) | Select-Object -Unique
     $allStatic = @($targets | Where-Object { -not $_.IsStatic }).Count -eq 0
     foreach ($parameter in $patchMethod.Parameters) {
         $name = $parameter.Name
         if ($name -eq '__instance' -and $allStatic) {
-            $failures.Add("Static target: $targetType::$targetMethod injects __instance but the target is static")
+            $failures.Add("Static target: $label injects __instance but the target is static")
             continue
         }
         if ($injected -contains $name -or $name.StartsWith('___')) { continue }
         if ($targetParams -notcontains $name) {
-            $failures.Add("Bad patch parameter: $targetType::$targetMethod has no '$name' (has: $($targetParams -join ', '))")
+            $failures.Add("Bad patch parameter: $label has no '$name' (has: $($targetParams -join ', '))")
         }
     }
 }
@@ -140,19 +182,28 @@ function Check-Type($type) {
     # [HarmonyPatch(typeof(X))] on the class and [HarmonyPatch("Y")] on the method stack into one
     # target, so the method's attributes fall back to the class's.
     $classInfo = Read-PatchAttributes $type.CustomAttributes
+
+    # A reverse patch carries its target on the method and is named whatever the author likes, so
+    # it matches none of the conventions below. AffixGiantSlayer's CallBase is one, and leaving
+    # it out meant EntityAlive.DamageEntity could be removed with this check still passing.
     $patchMethods = @($type.Methods | Where-Object {
+        $attributeNames = @($_.CustomAttributes | ForEach-Object { $_.AttributeType.Name })
         $_.Name -in @('Prefix','Postfix','Transpiler','Finalizer') -or
-        @($_.CustomAttributes | Where-Object { $_.AttributeType.Name -in @('HarmonyPrefix','HarmonyPostfix','HarmonyTranspiler','HarmonyFinalizer') }).Count -gt 0
+        @($attributeNames | Where-Object { $_ -in @('HarmonyPrefix','HarmonyPostfix','HarmonyTranspiler','HarmonyFinalizer','HarmonyReversePatch') }).Count -gt 0
     })
 
     foreach ($method in $patchMethods) {
         $methodInfo = Read-PatchAttributes $method.CustomAttributes
-        $targetType = if ($null -ne $methodInfo.TargetType) { $methodInfo.TargetType } else { $classInfo.TargetType }
-        $targetMethod = if ($null -ne $methodInfo.TargetMethod) { $methodInfo.TargetMethod } else { $classInfo.TargetMethod }
-        Check-Patch $targetType $targetMethod $method
+        $merged = [pscustomobject]@{
+            TargetType    = if ($null -ne $methodInfo.TargetType) { $methodInfo.TargetType } else { $classInfo.TargetType }
+            TargetMethod  = if ($null -ne $methodInfo.TargetMethod) { $methodInfo.TargetMethod } else { $classInfo.TargetMethod }
+            ArgumentTypes = if ($null -ne $methodInfo.ArgumentTypes) { $methodInfo.ArgumentTypes } else { $classInfo.ArgumentTypes }
+        }
+        $isReversePatch = @($method.CustomAttributes | Where-Object { $_.AttributeType.Name -eq 'HarmonyReversePatch' }).Count -gt 0
+        Check-Patch $merged $method (-not $isReversePatch)
     }
     # A patch class with no conventionally named patch method still has its target checked.
-    if ($patchMethods.Count -eq 0) { Check-Patch $classInfo.TargetType $classInfo.TargetMethod $null }
+    if ($patchMethods.Count -eq 0) { Check-Patch $classInfo $null $false }
 
     foreach ($nested in $type.NestedTypes) { Check-Type $nested }
 }

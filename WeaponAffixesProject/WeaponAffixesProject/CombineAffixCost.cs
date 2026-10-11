@@ -25,7 +25,7 @@ internal static class CombineAffixCost
 		{
 			return true;
 		}
-		ItemStack result = ((grid.result1.ItemStack != null && !grid.result1.ItemStack.IsEmpty()) ? grid.result1.ItemStack : grid.lastResult);
+		ItemStack result = grid.result;
 		if (result == null || result.IsEmpty())
 		{
 			return true;

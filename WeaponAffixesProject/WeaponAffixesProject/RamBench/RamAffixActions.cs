@@ -21,8 +21,8 @@ internal static class RamAffixActions
         RamAffixSource s = browser?.SelectedSource; EntityPlayerLocal p = GameManager.Instance.myEntityPlayerLocal;
         if (!CanExtract(s) || p == null || !HasToken(browser, p, "affixExtractionToken", "ttExtractionAffixRequiresItem")) return;
         if (!browser.Ui.PlayerInventory.AddItemNoPartial(new ItemStack(s.Affix.Clone(), 1), true)) { Deny(p, "xuiInventoryFullForPickup"); return; }
-        if (s.IsCosmetic) { var old=s.ParentStack.itemValue.CosmeticMods; var list=new List<ItemValue>(); for(int i=0;i<old.Length;i++) if(i!=s.Slot) list.Add(old[i]); s.ParentStack.itemValue.CosmeticMods=list.ToArray(); }
-        else s.ParentStack.itemValue.Modifications[s.Slot]=null;
+        if (s.IsCosmetic) { var old=s.ParentStack.itemValue.cosmeticMods; var list=new List<ItemValue>(); for(int i=0;i<old.Length;i++) if(i!=s.Slot) list.Add(old[i]); s.ParentStack.itemValue.SetCosmeticMods(list.ToArray()); }
+        else s.ParentStack.itemValue.SetModification(s.Slot, null);
         Consume(browser, "affixExtractionToken"); GameManager.ShowTooltip(p, Localization.Get("ttExtractionAffixSucces"), string.Empty, "recipe_unlocked"); AffixUtils.ApplyAffixTokenUseEvents("affixExtractionToken"); browser.RefreshNow();
     }
 

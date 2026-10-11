@@ -26,6 +26,9 @@ namespace WeaponAffixesProject
                 name == "buffdrunkgrandpaslearningelixir" ||
                 name == "buffpumpkincheesecake" ||
                 name == "buffshamchowder" ||
+                name == "buffchickennuggets" ||
+                name == "buffchickenwings" ||
+                name == "buffroadrunner" ||
                 name == "buffdrugsteroids" ||
                 name == "buffdrugrecog" ||
                 name == "buffdrugfortbites" ||

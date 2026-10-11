@@ -18,7 +18,7 @@ internal static class LegendaryLootChallengeTracking
 			ItemValue item = spawnedItem?.itemValue;
 			if (item?.ItemClass != null && !item.IsEmpty() && (item.ItemClass.HasAnyTags(AffixUtils.WeaponTag) || item.ItemClass.HasAnyTags(AffixUtils.ToolTag) || item.ItemClass.HasAnyTags(AffixUtils.ArmorTag)))
 			{
-				int mythicAffixes = AffixUtils.CountAffixesAtTier(item.CosmeticMods, 6);
+				int mythicAffixes = AffixUtils.CountAffixesAtTier(item.cosmeticMods, 6);
 				if (mythicAffixes >= requiredMythics)
 				{
 					AffixUtils.ApplyQuestEventManagerUseItem("affixModLevelDamage7");

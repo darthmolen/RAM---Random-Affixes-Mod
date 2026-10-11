@@ -17,7 +17,8 @@ public class ItemActionEntryExtractAffix : BaseItemActionEntry
 
 	public override void OnActivated()
 	{
-		Log.Out("[Affix] Extract button clicked");
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out("[Affix] Extract button clicked");
 		if (!(base.ItemController is XUiC_BasePartStack affixMod) || !affixMod.ItemClass.Name.StartsWith("affixMod") || AffixUtils.IsGodlikeAffix(affixMod.ItemClass))
 		{
 			return;
@@ -39,8 +40,10 @@ public class ItemActionEntryExtractAffix : BaseItemActionEntry
 		{
 			return;
 		}
-		Log.Out("Mod selected: '" + affixMod.ItemClass.localizedName + "'");
-		Log.Out("This mod is installed in: '" + parentItemValue.ItemClass.localizedName + "'");
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out("Mod selected: '" + affixMod.ItemClass.localizedName + "'");
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out("This mod is installed in: '" + parentItemValue.ItemClass.localizedName + "'");
 		ItemClass requiredItem = ItemClass.GetItemClass("affixExtractionToken");
 		if (requiredItem == null)
 		{
@@ -74,7 +77,7 @@ public class ItemActionEntryExtractAffix : BaseItemActionEntry
 				{
 					cosmeticGrid.AssembleWindow = assembleWindow;
 					cosmeticGrid.CurrentItem = parentItemStack;
-					cosmeticGrid.SetParts(parentItemStack.itemValue.CosmeticMods);
+					cosmeticGrid.SetParts();
 					assembleWindow.ItemStack = parentItemStack;
 					assembleWindow.OnChanged();
 				}
@@ -86,7 +89,8 @@ public class ItemActionEntryExtractAffix : BaseItemActionEntry
 		}
 		else
 		{
-			Log.Out("Player does not have item: '" + requiredItem.Name + "'");
+			if (WeaponAffixesProject.RamDebug.Enabled)
+			    Log.Out("Player does not have item: '" + requiredItem.Name + "'");
 			cil?.AddItemStack(new ItemStack(requiredValue, 0));
 			GameManager.ShowTooltip(player, string.Format(Localization.Get("ttExtractionAffixRequiresItem"), requiredItem.localizedName), string.Empty, "ui_denied");
 		}
@@ -101,17 +105,17 @@ public class ItemActionEntryExtractAffix : BaseItemActionEntry
 		affix.HandleMoveToPreferredLocation();
 		if (affix is XUiC_ItemCosmeticStack)
 		{
-			ItemValue[] newCosmeticModsList = new ItemValue[parentItem.itemValue.CosmeticMods.Length - 1];
+			ItemValue[] newCosmeticModsList = new ItemValue[parentItem.itemValue.cosmeticMods.Length - 1];
 			int j = 0;
-			for (int i = 0; i < parentItem.itemValue.CosmeticMods.Length; i++)
+			for (int i = 0; i < parentItem.itemValue.cosmeticMods.Length; i++)
 			{
-				if (parentItem.itemValue.CosmeticMods[i] != null && !parentItem.itemValue.CosmeticMods[i].IsEmpty())
+				if (parentItem.itemValue.cosmeticMods[i] != null && !parentItem.itemValue.cosmeticMods[i].IsEmpty())
 				{
-					newCosmeticModsList[j] = parentItem.itemValue.CosmeticMods[i];
+					newCosmeticModsList[j] = parentItem.itemValue.cosmeticMods[i];
 					j++;
 				}
 			}
-			parentItem.itemValue.CosmeticMods = newCosmeticModsList;
+			parentItem.itemValue.SetCosmeticMods(newCosmeticModsList);
 		}
 		return true;
 	}

@@ -27,10 +27,10 @@ namespace WeaponAffixesProject.HarmonyPatches
 
                 ItemStack itemStack = __instance.merge1.ItemStack.Clone();
                 itemStack.itemValue.MergeBest(__instance.merge2.ItemStack.itemValue);
-                itemStack.itemValue.CosmeticMods = CombineAffixSelectionState.BuildResultAffixes(
+                itemStack.itemValue.SetCosmeticMods(CombineAffixSelectionState.BuildResultAffixes(
                     __instance.GetParentByType<XUiC_CombineWindowGroup>(),
                     itemValue,
-                    itemValue2);
+                    itemValue2));
 
                 itemStack.itemValue.Meta = 0;
                 SetResultPreview(__instance, itemStack);
@@ -40,11 +40,7 @@ namespace WeaponAffixesProject.HarmonyPatches
 
             private static void SetResultPreview(XUiC_CombineGrid grid, ItemStack itemStack)
             {
-                grid.result1.SlotChangedEvent -= grid.Result1_SlotChangedEvent;
-                grid.result1.ItemStack = itemStack;
-                grid.result1.HiddenLock = true;
-                grid.result1.SlotChangedEvent += grid.Result1_SlotChangedEvent;
-                grid.lastResult = itemStack == null || itemStack.IsEmpty() ? ItemStack.Empty : itemStack;
+                grid.SetResult(itemStack == null || itemStack.IsEmpty() ? ItemStack.Empty : itemStack);
             }
         }
     }

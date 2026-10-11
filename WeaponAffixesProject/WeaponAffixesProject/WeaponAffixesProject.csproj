@@ -9,7 +9,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <LangVersion>latest</LangVersion>
-    <GameDir>C:\Steam\steamapps\common\7 Days To Die</GameDir>
+    <GameDir>D:\SteamLibrary\steamapps\common\7 Days To Die</GameDir>
   </PropertyGroup>
 
   <ItemGroup>

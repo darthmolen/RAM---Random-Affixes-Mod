@@ -58,7 +58,8 @@ namespace WeaponAffixesProject
                     var cosmeticController = (XUiC_ItemCosmeticStack)itemController;
                     var selectedClass = cosmeticController.ItemStack?.itemValue?.ItemClass;
 
-                    Log.Out(selectedClass.Name);
+                    if (WeaponAffixesProject.RamDebug.Enabled)
+                        Log.Out(selectedClass.Name);
 
                     if (selectedClass == null || !selectedClass.Name.StartsWith("affixMod")) return;
 
@@ -85,7 +86,8 @@ namespace WeaponAffixesProject
             }
             catch (Exception e)
             {
-                Log.Out($"[REROLL DEBUG] Failed adding reroll/extract action: {e}");
+                if (WeaponAffixesProject.RamDebug.Enabled)
+                    Log.Out($"[REROLL DEBUG] Failed adding reroll/extract action: {e}");
             }
         }
     }

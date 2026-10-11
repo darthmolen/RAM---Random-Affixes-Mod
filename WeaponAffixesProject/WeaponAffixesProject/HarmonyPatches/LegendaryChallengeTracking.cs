@@ -45,8 +45,8 @@ internal static class LegendaryChallengeTracking
 			if (item?.ItemClass != null && !item.IsEmpty() && item.ItemClass.HasAnyTags(AffixUtils.ArmorTag))
 			{
 				armorPieces++;
-				mythicAffixes += CountMythicAffixes(item.CosmeticMods);
-				mythicAffixes += CountMythicAffixes(item.Modifications);
+				mythicAffixes += CountMythicAffixes(item.cosmeticMods);
+				mythicAffixes += CountMythicAffixes(item.modifications);
 			}
 		}
 		if (armorPieces >= 4 && mythicAffixes >= 25)

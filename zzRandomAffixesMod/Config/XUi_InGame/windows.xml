@@ -156,11 +156,6 @@
                     <item_stack controller="XUiC_CombineAffixStack,WeaponAffixesProject" cell_size="75" allow_dropping="false" repeat_i="9" prefix_id="B9"/>
                 </grid>
 
-                <rect name="combineButton" controller="XUiC_CombineAffixButton,WeaponAffixesProject" pos="0,-750" width="153" height="42" style="press, hover" sprite="menu_empty3px" type="sliced" color="[black]" sound="[craft_click]">
-                    <sprite name="buttonBorder" depth="4" pos="0,0" width="153" height="42" sprite="menu_empty3px" type="sliced" color="[black]" fillcenter="false" />
-                    <button name="button" pos="3,-3" width="147" height="36" depth="5" style="press, hover" sprite="menu_empty3px" type="sliced" defaultcolor="82,75,58,255" hovercolor="124,111,78,255" selectedcolor="150,128,80,255" hoverscale="1.0" sound="[craft_click]"/>
-                    <label name="label" depth="6" pos="76,-21" width="153" height="42" text="COMBINE" text_key="xuiCombine" font_size="26" justify="center" pivot="center" color="[white]" effect="outline"/>
-                </rect>
             </rect>
         </window>
     </append>

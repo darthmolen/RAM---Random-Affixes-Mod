@@ -20,7 +20,8 @@ namespace WeaponAffixesProject
             if (!heldItem.TryGetMetadata("kills", out float kills) || !heldItem.TryGetMetadata("upgrades", out float upgrades) || !heldItem.TryGetMetadata("nextUpgrade", out float nextUpgrade) || !heldItem.TryGetMetadata("lastUpgrade", out float lastUpgrade))
                 return;
 
-            Log.Out($"current kills: {kills}\ncurrent upgrades: {upgrades}\ncurrent nextUpgrade: {nextUpgrade}\ncurrent lastUpgrade: {lastUpgrade}");
+            if (WeaponAffixesProject.RamDebug.Enabled)
+                Log.Out($"current kills: {kills}\ncurrent upgrades: {upgrades}\ncurrent nextUpgrade: {nextUpgrade}\ncurrent lastUpgrade: {lastUpgrade}");
             kills += AffixBonusKills.CheckBonusKills(__instance, player, heldItem);
             heldItem.SetMetadata("kills", kills);
 
@@ -68,7 +69,8 @@ namespace WeaponAffixesProject
             }
             catch (Exception e)
             {
-                Log.Out($"'{e}'");
+                if (WeaponAffixesProject.RamDebug.Enabled)
+                    Log.Out($"'{e}'");
             }
         }
 

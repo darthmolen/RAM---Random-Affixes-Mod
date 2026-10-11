@@ -22,7 +22,8 @@ public class ItemActionEntryRerollAffix : BaseItemActionEntry
 
 	public override void OnActivated()
 	{
-		Log.Out("[Affix] Reroll button clicked");
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out("[Affix] Reroll button clicked");
 		if (!(base.ItemController is XUiC_BasePartStack affixMod) || !affixMod.ItemClass.Name.StartsWith("affixMod") || AffixUtils.IsGodlikeAffix(affixMod.ItemClass))
 		{
 			return;
@@ -49,8 +50,10 @@ public class ItemActionEntryRerollAffix : BaseItemActionEntry
 		{
 			return;
 		}
-		Log.Out("Mod selected: '" + affixMod.ItemClass.localizedName + "'");
-		Log.Out("This mod is installed in: '" + parentItemValue.ItemClass.localizedName + "'");
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out("Mod selected: '" + affixMod.ItemClass.localizedName + "'");
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out("This mod is installed in: '" + parentItemValue.ItemClass.localizedName + "'");
 		ItemClass requiredItem = ItemClass.GetItemClass("affixRerollToken");
 		if (requiredItem == null)
 		{
@@ -80,7 +83,7 @@ public class ItemActionEntryRerollAffix : BaseItemActionEntry
 				{
 					cosmeticGrid.AssembleWindow = assembleWindow;
 					cosmeticGrid.CurrentItem = parentItemStack;
-					cosmeticGrid.SetParts(parentItemStack.itemValue.CosmeticMods);
+					cosmeticGrid.SetParts();
 					assembleWindow.ItemStack = parentItemStack;
 					assembleWindow.OnChanged();
 				}
@@ -94,7 +97,8 @@ public class ItemActionEntryRerollAffix : BaseItemActionEntry
 		}
 		else
 		{
-			Log.Out("Player does not have item: '" + requiredItem.Name + "'");
+			if (WeaponAffixesProject.RamDebug.Enabled)
+			    Log.Out("Player does not have item: '" + requiredItem.Name + "'");
 			cil?.AddItemStack(new ItemStack(requiredValue, 0));
 			GameManager.ShowTooltip(player, string.Format(Localization.Get("ttRerollAffixRequiresItem"), requiredItem.localizedName), string.Empty);
 		}
@@ -109,11 +113,11 @@ public class ItemActionEntryRerollAffix : BaseItemActionEntry
 		{
 			return false;
 		}
-		for (int i = 0; i < itemValue.CosmeticMods.Length; i++)
+		for (int i = 0; i < itemValue.cosmeticMods.Length; i++)
 		{
-			if (itemValue.CosmeticMods[i] != null && !itemValue.CosmeticMods[i].IsEmpty())
+			if (itemValue.cosmeticMods[i] != null && !itemValue.cosmeticMods[i].IsEmpty())
 			{
-				ItemClassModifier mod = itemValue.CosmeticMods[i].ItemClass as ItemClassModifier;
+				ItemClassModifier mod = itemValue.cosmeticMods[i].ItemClass as ItemClassModifier;
 				modList = AffixUtils.RemoveSimilarMods(modList, mod);
 				if (oldAffix.Name == mod.Name)
 				{
@@ -152,9 +156,9 @@ public class ItemActionEntryRerollAffix : BaseItemActionEntry
 		{
 			GameManager.Instance.myEntityPlayerLocal.Buffs.RemoveBuff("buff" + oldAffix.Name);
 		}
-		ItemValue[] mods = itemValue.CosmeticMods;
+		ItemValue[] mods = itemValue.cosmeticMods;
 		mods[index] = new ItemValue(selectedMod.Id);
-		parentItem.itemValue.CosmeticMods = mods;
+		parentItem.itemValue.SetCosmeticMods(mods);
 		return true;
 	}
 }

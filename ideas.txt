@@ -32,14 +32,12 @@ no repair during horde night setting
 
 turret targeting mod, high customizability on targeting from turrets. target specific type of zombies, based on distance, height, health etc
 
+Rimworld mod idea:
+Diseases overhaul, more realistic. diseases spread, are caused by natural means, dont show up immediatly, show up as minor symptons, can grow to majer diseases, but might stay as simple disease. etc allergies like hayfever, certain foods etc, you only find out when you're exposed to it.
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Stat added to track kills on weapons in player stat page DONE
-Health Regen affix is broken. DONE
-nerf ascension token cost. DONE
-increase buff duration does the opposite. DONE
-challenges and skills dont show the number correctly from the setting DONE
-nerf find natural mythic item challenge DONE
+BUG: increase buff duration, new buffs are missing and moonshine/awesome sauce/learning elixir aren't working.
 
 cap rarity on quality
 

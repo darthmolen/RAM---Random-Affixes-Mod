@@ -17,7 +17,8 @@ namespace WeaponAffixesProject
                 _damageSource.damageType != EnumDamageTypes.Slashing)
                 return;
 
-            Log.Out($"Name of damaging entity: {source.LocalizedEntityName}");
+            if (WeaponAffixesProject.RamDebug.Enabled)
+                Log.Out($"Name of damaging entity: {source.LocalizedEntityName}");
 
             List<int> instances = AffixUtils.GetAllAffixesFromArmor(__instance, "resurgent");
             if (instances.Count == 0)

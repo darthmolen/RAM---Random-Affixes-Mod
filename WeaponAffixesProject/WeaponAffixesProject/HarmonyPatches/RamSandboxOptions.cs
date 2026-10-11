@@ -100,12 +100,14 @@ namespace WeaponBuffMod.HarmonyPatches
                 if (manager.IsInit)
                 {
                     manager.LoadPresets();
-                    Log.Out("[WeaponBuffMod] Reloaded sandbox presets after registering RAM options.");
+                    if (WeaponAffixesProject.RamDebug.Enabled)
+                        Log.Out("[WeaponBuffMod] Reloaded sandbox presets after registering RAM options.");
                 }
             }
             catch (Exception ex)
             {
-                Log.Warning($"[WeaponBuffMod] Could not reload sandbox presets after registering RAM options. {ex.Message}");
+                if (WeaponAffixesProject.RamDebug.Enabled)
+                    Log.Warning($"[WeaponBuffMod] Could not reload sandbox presets after registering RAM options. {ex.Message}");
             }
         }
 
@@ -169,7 +171,8 @@ namespace WeaponBuffMod.HarmonyPatches
 
             manager.AddSandboxOption(option);
             MoveOptionToRamCategory(manager, option, definition.SortOrder);
-            Log.Out($"[WeaponBuffMod] Registered sandbox option {definition.OptionName} in {CategoryName}.");
+            if (WeaponAffixesProject.RamDebug.Enabled)
+                Log.Out($"[WeaponBuffMod] Registered sandbox option {definition.OptionName} in {CategoryName}.");
         }
 
         private static void EnsureRamCategory(SandboxOptions.SandboxOptionManager manager)
@@ -248,7 +251,8 @@ namespace WeaponBuffMod.HarmonyPatches
             }
             catch (Exception ex)
             {
-                Log.Warning($"[WeaponBuffMod] Could not read {definition.OptionName}; using default {definition.DefaultValue}. {ex.Message}");
+                if (WeaponAffixesProject.RamDebug.Enabled)
+                    Log.Warning($"[WeaponBuffMod] Could not read {definition.OptionName}; using default {definition.DefaultValue}. {ex.Message}");
                 return definition.DefaultValue;
             }
         }

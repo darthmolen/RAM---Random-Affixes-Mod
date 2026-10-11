@@ -7,7 +7,8 @@ namespace WeaponAffixesProject
     {
         public static void Postfix(EntityAlive __instance)
         {
-            Log.Out($"'{__instance.LocalizedEntityName}'");
+            if (WeaponAffixesProject.RamDebug.Enabled)
+                Log.Out($"'{__instance.LocalizedEntityName}'");
             if (!__instance.HasAnyTags(FastTags<TagGroup.Global>.GetTag("zombie"))) return;
 
             var player = GameManager.Instance?.myEntityPlayerLocal;
@@ -31,8 +32,8 @@ namespace WeaponAffixesProject
             int totalAffixes = 0;
             int rareAffixes = 0;
             int mythicAffixes = 0;
-            CountAffixes(heldItem.CosmeticMods, ref totalAffixes, ref rareAffixes, ref mythicAffixes);
-            CountAffixes(heldItem.Modifications, ref totalAffixes, ref rareAffixes, ref mythicAffixes);
+            CountAffixes(heldItem.cosmeticMods, ref totalAffixes, ref rareAffixes, ref mythicAffixes);
+            CountAffixes(heldItem.modifications, ref totalAffixes, ref rareAffixes, ref mythicAffixes);
 
             // Get kill with any affix
             if (totalAffixes > 0)

@@ -143,7 +143,8 @@ internal static class AffixUtils
 		}
 		catch (Exception arg)
 		{
-			Log.Out($"Can't find progression value '{progressionName}': '{arg}'");
+			if (WeaponAffixesProject.RamDebug.Enabled)
+			    Log.Out($"Can't find progression value '{progressionName}': '{arg}'");
 		}
 		return 0;
 	}
@@ -198,7 +199,8 @@ internal static class AffixUtils
 		int magicFindLvl = 0;
 		if (player?.Progression == null)
 		{
-			Log.Out("Player progression not found");
+			if (WeaponAffixesProject.RamDebug.Enabled)
+			    Log.Out("Player progression not found");
 		}
 		else
 		{
@@ -211,7 +213,8 @@ internal static class AffixUtils
 			int random = rng.Next(0, 100);
 			if (random < magicFindLvl * 5)
 			{
-				Log.Out("Magic Find increased affix rarity!");
+				if (WeaponAffixesProject.RamDebug.Enabled)
+				    Log.Out("Magic Find increased affix rarity!");
 				selectedTier++;
 			}
 			else
@@ -505,7 +508,8 @@ internal static class AffixUtils
 			}
 			else
 			{
-				Log.Out("Questmanager is null");
+				if (WeaponAffixesProject.RamDebug.Enabled)
+				    Log.Out("Questmanager is null");
 			}
 		}
 	}
@@ -546,9 +550,9 @@ internal static class AffixUtils
 		{
 			return instances;
 		}
-		if (item.CosmeticMods != null)
+		if (item.cosmeticMods != null)
 		{
-			ItemValue[] cosmeticMods = item.CosmeticMods;
+			ItemValue[] cosmeticMods = item.cosmeticMods;
 			foreach (ItemValue mod in cosmeticMods)
 			{
 				if (mod != null && !mod.IsEmpty() && IsAffixModWithKey(mod.ItemClass, tagName) && TryGetAffixTierIndex(mod.ItemClass.Name, out var tierIndex))
@@ -557,9 +561,9 @@ internal static class AffixUtils
 				}
 			}
 		}
-		if (item.Modifications != null)
+		if (item.modifications != null)
 		{
-			ItemValue[] modifications = item.Modifications;
+			ItemValue[] modifications = item.modifications;
 			foreach (ItemValue mod2 in modifications)
 			{
 				if (mod2 != null && !mod2.IsEmpty() && IsAffixModWithKey(mod2.ItemClass, tagName) && TryGetAffixTierIndex(mod2.ItemClass.Name, out var tierIndex2))

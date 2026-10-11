@@ -17,7 +17,8 @@ public class ItemActionEntryUnlockAffix : BaseItemActionEntry
 
 	public override void OnActivated()
 	{
-		Log.Out("[Affix] Unlock button clicked");
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out("[Affix] Unlock button clicked");
 		if (!(base.ItemController is XUiC_ItemStack item) || (!item.itemClass.HasAnyTags(AffixUtils.ArmorTag) && !item.itemClass.HasAnyTags(AffixUtils.WeaponTag) && !item.itemClass.HasAnyTags(AffixUtils.ToolTag)))
 		{
 			return;
@@ -36,7 +37,8 @@ public class ItemActionEntryUnlockAffix : BaseItemActionEntry
 		string materialName = item.itemClass.MadeOfMaterial.GetLocalizedMaterialName();
 		ItemClass requiredItem = ItemClass.GetItemClass("affixUnlockToken");
 		ItemClass requiredItem2 = GetItemFromMaterial(materialName);
-		Log.Out(materialName);
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out(materialName);
 		if (requiredItem == null)
 		{
 			return;
@@ -61,10 +63,10 @@ public class ItemActionEntryUnlockAffix : BaseItemActionEntry
 		if (count > 0 && count2 > 9)
 		{
 			string newAffix = "";
-			int mythicAffixesBefore = AffixUtils.CountAffixesAtTier(item.itemStack.itemValue.CosmeticMods, 6);
+			int mythicAffixesBefore = AffixUtils.CountAffixesAtTier(item.itemStack.itemValue.cosmeticMods, 6);
 			if (UnlockAffix(ref item.itemStack, ref newAffix))
 			{
-				bool unlockedMythic = AffixUtils.CountAffixesAtTier(item.itemStack.itemValue.CosmeticMods, 6) > mythicAffixesBefore;
+				bool unlockedMythic = AffixUtils.CountAffixesAtTier(item.itemStack.itemValue.cosmeticMods, 6) > mythicAffixesBefore;
 				item.ForceRefreshItemStack();
 				XUiController assembleWg = xui.FindWindowGroupByName("assemble");
 				if (assembleWg != null)
@@ -75,7 +77,7 @@ public class ItemActionEntryUnlockAffix : BaseItemActionEntry
 					{
 						cosmeticGrid.AssembleWindow = assembleWindow;
 						cosmeticGrid.CurrentItem = item.itemStack;
-						cosmeticGrid.SetParts(item.itemStack.itemValue.CosmeticMods);
+						cosmeticGrid.SetParts();
 						assembleWindow.ItemStack = item.itemStack;
 						assembleWindow.OnChanged();
 					}
@@ -83,7 +85,8 @@ public class ItemActionEntryUnlockAffix : BaseItemActionEntry
 				playerInventory.RemoveItems(ingredients);
 				foreach (ItemStack ingredient in ingredients)
 				{
-					Log.Out(ingredient.itemValue.ItemClass.localizedName);
+					if (WeaponAffixesProject.RamDebug.Enabled)
+					    Log.Out(ingredient.itemValue.ItemClass.localizedName);
 					cil?.RemoveItemStack(ingredient);
 				}
 				AffixUtils.ApplyAffixTokenUseEvents("affixUnlockToken");
@@ -128,7 +131,7 @@ public class ItemActionEntryUnlockAffix : BaseItemActionEntry
 	public static bool UnlockAffix(ref ItemStack itemStack, ref string newAffix)
 	{
 		EntityPlayerLocal player = GameManager.Instance?.myEntityPlayerLocal;
-		ItemValue[] cosmeticMods = itemStack.itemValue.CosmeticMods;
+		ItemValue[] cosmeticMods = itemStack.itemValue.cosmeticMods;
 		int currentSlots = ((cosmeticMods != null) ? cosmeticMods.Length : 0);
 		if (currentSlots >= AffixUtils.GetEffectiveMaxAffixes(player))
 		{

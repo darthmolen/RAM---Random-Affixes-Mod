@@ -17,7 +17,8 @@ internal class ItemActionEntryUpgradeAffix : BaseItemActionEntry
 
 	public override void OnActivated()
 	{
-		Log.Out("[Affix] Upgrade button clicked");
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out("[Affix] Upgrade button clicked");
 		if (!(base.ItemController is XUiC_BasePartStack affixMod) || !affixMod.ItemClass.Name.StartsWith("affixMod"))
 		{
 			return;
@@ -39,8 +40,10 @@ internal class ItemActionEntryUpgradeAffix : BaseItemActionEntry
 		{
 			return;
 		}
-		Log.Out("Mod selected: '" + affixMod.ItemClass.localizedName + "'");
-		Log.Out("This mod is installed in: '" + parentItemValue.ItemClass.localizedName + "'");
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out("Mod selected: '" + affixMod.ItemClass.localizedName + "'");
+		if (WeaponAffixesProject.RamDebug.Enabled)
+		    Log.Out("This mod is installed in: '" + parentItemValue.ItemClass.localizedName + "'");
 		ItemClass requiredItem = ItemClass.GetItemClass("affixUpgradeToken");
 		if (requiredItem == null)
 		{
@@ -55,7 +58,8 @@ internal class ItemActionEntryUpgradeAffix : BaseItemActionEntry
 		XUiC_CollectedItemList cil = base.ItemController?.xui?.CollectedItemList;
 		if (count <= 0)
 		{
-			Log.Out("Player does not have item: '" + requiredItem.Name + "'");
+			if (WeaponAffixesProject.RamDebug.Enabled)
+			    Log.Out("Player does not have item: '" + requiredItem.Name + "'");
 			cil?.AddItemStack(new ItemStack(requiredValue, 0));
 			GameManager.ShowTooltip(player, string.Format(Localization.Get("ttUpgradeAffixRequiresItem"), requiredItem.localizedName), string.Empty, "ui_denied");
 			return;
@@ -68,9 +72,9 @@ internal class ItemActionEntryUpgradeAffix : BaseItemActionEntry
 			if (value < 6)
 			{
 				List<int> upgradeSlot = new List<int>();
-				for (int i = 0; i < parentItemValue.CosmeticMods.Length; i++)
+				for (int i = 0; i < parentItemValue.cosmeticMods.Length; i++)
 				{
-					if (parentItemValue.CosmeticMods[i].ItemClass.Name == affixName)
+					if (parentItemValue.cosmeticMods[i].ItemClass.Name == affixName)
 					{
 						upgradeSlot.Add(i);
 						break;
@@ -89,7 +93,7 @@ internal class ItemActionEntryUpgradeAffix : BaseItemActionEntry
 						{
 							cosmeticGrid.AssembleWindow = assembleWindow;
 							cosmeticGrid.CurrentItem = parentItemStack;
-							cosmeticGrid.SetParts(parentItemStack.itemValue.CosmeticMods);
+							cosmeticGrid.SetParts();
 							assembleWindow.ItemStack = parentItemStack;
 							assembleWindow.OnChanged();
 						}
@@ -103,7 +107,8 @@ internal class ItemActionEntryUpgradeAffix : BaseItemActionEntry
 						}
 						catch (Exception arg)
 						{
-							Log.Out($"Can't find magic slayer perk: '{arg}'");
+							if (WeaponAffixesProject.RamDebug.Enabled)
+							    Log.Out($"Can't find magic slayer perk: '{arg}'");
 						}
 						int killsToUpgrade = AffixUtils.GetAdjustedKillsToUpgrade(magicSlayerLvl);
 						WeaponUpgrades.RecordUpgrade(parentItemStack.itemValue, upgrades);

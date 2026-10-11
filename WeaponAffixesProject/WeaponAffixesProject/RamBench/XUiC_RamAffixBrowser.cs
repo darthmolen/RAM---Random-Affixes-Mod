@@ -138,9 +138,9 @@ public class XUiC_RamAffixBrowser : XUiController
                 for (int i = 0; i < tileEntities.Count; i++)
                 {
                     TileEntity tileEntity = tileEntities[i];
-                    if (tileEntity == null || !tileEntity.TryGetSelfOrFeature<ITileEntityLootable>(out ITileEntityLootable storage))
+                    if (tileEntity == null || !tileEntity.TryGetSelfOrFeature<TEFeatureStorage>(out TEFeatureStorage storage))
                         continue;
-                    if (!storage.bPlayerStorage || storage.items == null)
+                    if (storage.ItemGrid == null || !storage.ItemGrid.PlayerOwned)
                         continue;
 
                     Vector3i storagePos = storage.ToWorldPos();
@@ -152,7 +152,7 @@ public class XUiC_RamAffixBrowser : XUiController
                         continue;
 
                     containerCount++;
-                    CollectAffixes(storage.items);
+                    CollectAffixes(storage.ItemGrid);
                 }
             }
         }
@@ -444,7 +444,7 @@ public class XUiC_RamAffixBrowser : XUiController
         return true;
     }
 
-    private void CollectAffixes(ItemStack[] storedItems)
+    private void CollectAffixes(ItemStackGrid storedItems)
     {
         for (int i = 0; i < storedItems.Length; i++)
         {
@@ -453,12 +453,12 @@ public class XUiC_RamAffixBrowser : XUiController
                 continue;
 
             itemCount++;
-            CollectAffixes(stack.itemValue.CosmeticMods, stack, storedItems, i, true);
-            CollectAffixes(stack.itemValue.Modifications, stack, storedItems, i, false);
+            CollectAffixes(stack.itemValue.cosmeticMods, stack, storedItems, i, true);
+            CollectAffixes(stack.itemValue.modifications, stack, storedItems, i, false);
         }
     }
 
-    private void CollectAffixes(ItemValue[] mods, ItemStack parent, ItemStack[] storageItems, int parentSlot, bool cosmetic)
+    private void CollectAffixes(ItemValue[] mods, ItemStack parent, ItemStackGrid storageItems, int parentSlot, bool cosmetic)
     {
         if (mods == null)
             return;

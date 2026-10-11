@@ -8,7 +8,8 @@ namespace WeaponBuffMod
     {
         public void InitMod(Mod __mod)
         {
-            Log.Out("[WeaponBuffMod] Initializing...");
+            if (WeaponAffixesProject.RamDebug.Enabled)
+                Log.Out("[WeaponBuffMod] Initializing...");
             var harmony = new Harmony("com.example.weaponbuff");
             harmony.PatchAll();
             CustomSandboxSettings.Register();

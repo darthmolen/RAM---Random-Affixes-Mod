@@ -30,17 +30,17 @@ namespace WeaponAffixesProject
             {
                 __instance.compareStack = ItemStack.Empty.Clone();
             }
-            if (flag2 && __instance.itemStack.itemValue.Modifications != null)
+            if (flag2 && __instance.itemStack.itemValue.modifications != null)
             {
                 __instance.partList.SetMainItem(__instance.itemStack);
-                if (__instance.itemStack.itemValue.CosmeticMods != null && __instance.itemStack.itemValue.CosmeticMods.Length != 0 && __instance.itemStack.itemValue.CosmeticMods[0] != null && !__instance.itemStack.itemValue.CosmeticMods[0].IsEmpty())
+                if (__instance.itemStack.itemValue.cosmeticMods != null && __instance.itemStack.itemValue.cosmeticMods.Length != 0 && __instance.itemStack.itemValue.cosmeticMods[0] != null && !__instance.itemStack.itemValue.cosmeticMods[0].IsEmpty())
                 {
-                    __instance.partList.SetSlots(__instance.itemStack.itemValue.CosmeticMods, 0);
-                    __instance.partList.SetSlots(__instance.itemStack.itemValue.Modifications, __instance.itemStack.itemValue.CosmeticMods.Length);
+                    __instance.partList.SetSlots(__instance.itemStack.itemValue.cosmeticMods, 0);
+                    __instance.partList.SetSlots(__instance.itemStack.itemValue.modifications, __instance.itemStack.itemValue.cosmeticMods.Length);
                 }
                 else
                 {
-                    __instance.partList.SetSlots(__instance.itemStack.itemValue.Modifications, 0);
+                    __instance.partList.SetSlots(__instance.itemStack.itemValue.modifications, 0);
                 }
                 __instance.partList.ViewComponent.IsVisible = true;
             }

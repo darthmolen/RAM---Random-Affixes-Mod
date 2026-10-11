@@ -1,13 +1,17 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine.Scripting;
 
 [Preserve]
 public class XUiC_CombineAffixStack : XUiC_ItemStack
 {
+    private static readonly List<XUiC_CombineAffixStack> ActiveStacks = new List<XUiC_CombineAffixStack>();
+
     private bool useItemB;
     private int affixSlot;
     private int lastType = int.MinValue;
     private bool refreshingDisplayStack;
+    private bool registered;
 
     public override void Init()
     {
@@ -15,6 +19,8 @@ public class XUiC_CombineAffixStack : XUiC_ItemStack
         AllowDropping = false;
         SimpleClick = true;
         IsDirty = true;
+        ActiveStacks.Add(this);
+        registered = true;
     }
 
     public override void Update(float _dt)
@@ -45,8 +51,7 @@ public class XUiC_CombineAffixStack : XUiC_ItemStack
             return;
 
         WeaponAffixesProject.CombineAffixSelectionState.Toggle(group, affixSlot, useItemB);
-        XUiC_CombineAffixChooser chooser = GetParentByType<XUiC_CombineAffixChooser>();
-        chooser?.RefreshBindingsSelfAndChildren();
+        RefreshSelectionBindings(group, affixSlot);
 
         XUiC_CombineGrid grid = GetCombineGrid(group);
         if (grid != null)
@@ -158,6 +163,25 @@ public class XUiC_CombineAffixStack : XUiC_ItemStack
         RefreshBindings();
     }
 
+    private static void RefreshSelectionBindings(XUiC_CombineWindowGroup group, int slot)
+    {
+        for (int i = ActiveStacks.Count - 1; i >= 0; i--)
+        {
+            XUiC_CombineAffixStack stack = ActiveStacks[i];
+            if (stack == null || !stack.registered || stack.ViewComponent == null)
+            {
+                ActiveStacks.RemoveAt(i);
+                continue;
+            }
+
+            if (stack.affixSlot != slot || stack.GetCombineWindowGroup() != group)
+                continue;
+
+            stack.RefreshBindings();
+            stack.ViewComponent.IsVisible = slot < GetConfiguredMaxAffixes();
+        }
+    }
+
     private ItemValue GetAffix()
     {
         XUiC_CombineWindowGroup group = GetCombineWindowGroup();
@@ -166,12 +190,12 @@ public class XUiC_CombineAffixStack : XUiC_ItemStack
             return null;
 
         ItemStack stack = useItemB ? grid.merge2.ItemStack : grid.merge1.ItemStack;
-        if (stack == null || stack.IsEmpty() || stack.itemValue == null || stack.itemValue.CosmeticMods == null)
+        if (stack == null || stack.IsEmpty() || stack.itemValue == null || stack.itemValue.cosmeticMods == null)
             return null;
-        if (affixSlot < 0 || affixSlot >= stack.itemValue.CosmeticMods.Length)
+        if (affixSlot < 0 || affixSlot >= stack.itemValue.cosmeticMods.Length)
             return null;
 
-        ItemValue mod = stack.itemValue.CosmeticMods[affixSlot];
+        ItemValue mod = stack.itemValue.cosmeticMods[affixSlot];
         if (mod == null || mod.IsEmpty() || !WeaponAffixesProject.AffixUtils.IsAffixMod(mod.ItemClass))
             return null;
 

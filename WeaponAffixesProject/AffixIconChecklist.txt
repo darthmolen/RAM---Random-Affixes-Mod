@@ -1,0 +1,148 @@
+ATTRIBUTES
+Strength Attribute
+Perception Attribute
+Fortitude Attribute
+Agility Attribute
+Intellect Attribute
+
+GENERAL DAMAGE AND WEAPON HANDLING
+Armor Penetration
+Attack Speed - Base
+Attack Speed - Percentage
+Block Damage - Base
+Block Damage - Percentage
+Body Damage - Base
+Body Damage - Percentage
+Entity Damage - Base
+Entity Damage - Percentage
+Power Attack Damage - Base
+Power Attack Damage - Percentage
+Headshot Damage - Base
+Headshot Damage - Percentage
+Cleave / Glancing Hit Damage
+Gun Accuracy
+Projectile Velocity
+Range Increase
+Reload Speed
+Magazine Size - Base
+Magazine Size - Percentage
+Fire Rate - Base
+Fire Rate - Percentage
+Sneak Damage - Base
+Sneak Damage - Percentage
+Sprint Attack Damage
+
+WEAPON TYPE DAMAGE
+Baton Damage
+Bow / Crossbow Damage
+Club Damage
+Explosives Damage
+Knife Damage
+Knuckles Damage
+Machine Gun Damage
+Motor Tool Damage
+Pistol Damage
+Revolver / .44 Damage
+Robotic Turret Damage
+Shotgun Damage
+Sledgehammer Damage
+Sniper Damage
+Spear Damage
+Tool Damage
+
+TARGET TYPE DAMAGE
+Feral Damage
+Radiated Damage
+Infernal / Charged Damage
+Giant Slayer
+Bring It Down
+Instakill
+Full-Health Target Damage
+Low-Health Target Damage
+Knocked-Down Target Damage
+
+CONDITIONAL DAMAGE
+Blood Moon Damage
+Forest Damage
+Burnt Forest Damage
+Desert Damage
+Snow Damage
+Wasteland Damage
+Indoors Damage
+Night Damage - Base
+Night Damage - Percentage
+Night Sneak Damage
+Level Damage
+Stoked to Fury / Damage While Injured
+Max Strength Damage
+Max Perception Damage
+Max Fortitude Damage
+Max Agility Damage
+Max Intellect Damage
+Damage at High Food
+Damage at Low Food
+Damage at High Water
+Damage at Low Water
+Damage at Max HP
+Damage at Low HP
+
+STATUS EFFECTS AND CROWD CONTROL
+Bleed Chance
+Burn Chance
+Shock Chance
+Slow Power Headshots
+Stun Headshots
+Cripple Headshots
+Ragdoll Headshots
+Dismemberment Chance
+
+DEFENSE, HEALTH, AND RECOVERY
+Armor Rating
+Critical Injury Resistance
+Dodge Chance
+Durability - Base
+Durability - Percentage
+Maximum HP - Base
+Maximum HP - Percentage
+Health Regeneration
+Lifesteal
+Infection Resistance
+Stun Resistance
+Heat Resistance
+Cold Resistance
+Elemental Resistance
+Resurgence / Cleanse Injury on Hit
+Kill-Streak Maximum HP
+
+STAMINA AND MOVEMENT
+Carry Capacity
+Crouch Speed
+Jump Strength
+Movement Speed
+Run Speed
+Walk Speed
+Rapid Response / Speed After Being Hit
+Stamina on Kill
+Stamina Regeneration
+Stamina Regeneration While Sprinting
+Maximum Stamina - Base
+Maximum Stamina - Percentage
+Stamina Cost
+Light Attack Stamina Cost
+Power Attack Stamina Cost
+
+LOOT, RESOURCES, AND UTILITY
+Arrow Recovery
+Bullet Casing Return
+Resource Bonus
+Harvest Count
+Bonus Kills
+XP Bonus
+Loot Bag Chance
+Loot Stage - Base
+Loot Stage - Percentage
+Bartering
+Increase Buff Duration
+
+HIGH-RARITY AND KILL-BASED EFFECTS
+Kill-Streak Damage

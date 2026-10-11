@@ -15,7 +15,8 @@ namespace WeaponAffixesProject
             }
             catch (Exception ex)
             {
-                Log.Out($"[WeaponBuffMod] Error in CanRemove_Prefix: '{ex}'");
+                if (WeaponAffixesProject.RamDebug.Enabled)
+                    Log.Out($"[WeaponBuffMod] Error in CanRemove_Prefix: '{ex}'");
             }
             return true;
         }

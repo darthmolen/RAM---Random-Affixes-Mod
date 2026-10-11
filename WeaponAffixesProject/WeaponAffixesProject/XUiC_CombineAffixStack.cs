@@ -72,6 +72,14 @@ public class XUiC_CombineAffixStack : XUiC_ItemStack
             base.setItemStack(stack);
     }
 
+    // V3.3 answers the {selectionbordercolor} binding through its own
+    // bindingSelectionBorderColor() method, which XUi resolves ahead of
+    // GetBindingValueInternal, so the override that used to return the highlight here was
+    // never consulted. XUiC_CombineAffixStackReadOnly paints it onto the SelectionBorderColor
+    // property instead, and reads this to decide when.
+    internal bool IsAffixSelected =>
+        WeaponAffixesProject.CombineAffixSelectionState.IsSelected(GetCombineWindowGroup(), affixSlot, useItemB);
+
     public override bool GetBindingValueInternal(ref string value, string bindingName)
     {
         switch (bindingName)
@@ -81,13 +89,6 @@ public class XUiC_CombineAffixStack : XUiC_ItemStack
             case "isQuickSwap":
                 value = "false";
                 return true;
-            case "selectionbordercolor":
-                if (WeaponAffixesProject.CombineAffixSelectionState.IsSelected(GetCombineWindowGroup(), affixSlot, useItemB))
-                {
-                    value = "222,206,163,255";
-                    return true;
-                }
-                break;
             case "locktypeicon":
             case "stacklockicon":
                 value = string.Empty;

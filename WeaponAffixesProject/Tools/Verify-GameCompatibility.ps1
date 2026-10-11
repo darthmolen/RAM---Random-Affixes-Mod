@@ -151,8 +151,18 @@ function Check-Type($type) {
             TargetMethod  = if ($null -ne $methodInfo.TargetMethod) { $methodInfo.TargetMethod } else { $classInfo.TargetMethod }
             ArgumentTypes = if ($null -ne $methodInfo.ArgumentTypes) { $methodInfo.ArgumentTypes } else { $classInfo.ArgumentTypes }
         }
-        $isReversePatch = @($method.CustomAttributes | Where-Object { $_.AttributeType.Name -eq 'HarmonyReversePatch' }).Count -gt 0
-        Check-Patch $merged $method (-not $isReversePatch)
+        # Only prefix/postfix/finalizer parameters are matched against the target's by name.
+        #
+        # A reverse patch declares the original's signature and binds positionally. A transpiler
+        # takes Harmony's own convention parameters -- IEnumerable<CodeInstruction> instructions,
+        # ILGenerator generator, MethodBase original -- none of which is a parameter of the method
+        # being patched. Checking either against the target produces pure noise: OcbCrookedDeco's
+        # transpiler over BlockShapeNew.renderFace reported "has no 'instructions'" before this.
+        $attributeNames = @($method.CustomAttributes | ForEach-Object { $_.AttributeType.Name })
+        $bindsPositionally = ($attributeNames -contains 'HarmonyReversePatch') -or
+                             ($attributeNames -contains 'HarmonyTranspiler') -or
+                             ($method.Name -eq 'Transpiler')
+        Check-Patch $merged $method (-not $bindsPositionally)
     }
     # A patch class with no conventionally named patch method still has its target checked.
     if ($patchMethods.Count -eq 0) { Check-Patch $classInfo $null $false }

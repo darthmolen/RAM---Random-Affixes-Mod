@@ -9,8 +9,44 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <LangVersion>latest</LangVersion>
-    <GameDir>D:\SteamLibrary\steamapps\common\7 Days To Die</GameDir>
   </PropertyGroup>
+
+  <!--
+    Where 7 Days To Die is installed. Resolution order:
+      1. -p:GameDir="D:\Path\To\7 Days To Die" on the command line
+      2. the SDTD_GAMEDIR environment variable
+      3. the known install locations below, first one that exists
+    The first candidate is the path this was previously hardcoded to, so an existing checkout
+    keeps building with no arguments; the others let it build on a machine that is not that one.
+  -->
+  <PropertyGroup>
+    <GameDir Condition="'$(GameDir)' == '' and '$(SDTD_GAMEDIR)' != ''">$(SDTD_GAMEDIR)</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('D:\SteamLibrary\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\Assembly-CSharp.dll')">D:\SteamLibrary\steamapps\common\7 Days To Die</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('C:\Program Files (x86)\Steam\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\Assembly-CSharp.dll')">C:\Program Files (x86)\Steam\steamapps\common\7 Days To Die</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and Exists('C:\Steam\steamapps\common\7 Days To Die\7DaysToDie_Data\Managed\Assembly-CSharp.dll')">C:\Steam\steamapps\common\7 Days To Die</GameDir>
+  </PropertyGroup>
+
+  <!--
+    Without this the build fails with six "could not resolve reference" errors pointing at a
+    path that does not exist, which reads as a broken project rather than a missing game.
+  -->
+  <Target Name="VerifyGameDir" BeforeTargets="BeforeBuild">
+    <Error Condition="'$(GameDir)' == ''"
+           Text="GameDir could not be auto-detected. Pass -p:GameDir=&quot;&lt;path to 7 Days To Die&gt;&quot; or set the SDTD_GAMEDIR environment variable." />
+    <Error Condition="!Exists('$(GameDir)\7DaysToDie_Data\Managed\Assembly-CSharp.dll')"
+           Text="Assembly-CSharp.dll not found under GameDir '$(GameDir)'." />
+  </Target>
+
+  <!--
+    Keep the DLL that ships in zzRandomAffixesMod in step with the source. It is tracked in the
+    repo and copied by hand, so the two can drift with nothing to catch it.
+  -->
+  <Target Name="CopyToModFolder" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetPath)"
+          DestinationFolder="$(MSBuildThisFileDirectory)..\..\zzRandomAffixesMod\"
+          SkipUnchangedFiles="true" />
+    <Message Importance="high" Text="RAM: copied $(TargetFileName) to zzRandomAffixesMod\" />
+  </Target>
 
   <ItemGroup>
     <Reference Include="0Harmony">

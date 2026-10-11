@@ -1,7 +1,12 @@
 param(
     [string]$GameDir,
     [string]$ModDll,
-    [string]$ModConfig = "$PSScriptRoot\..\..\zzRandomAffixesMod\Config"
+    [string]$ModConfig,
+    [string]$RepoRoot,
+    # Mods whose xpaths target another mod's XML rather than vanilla's. Their targets cannot
+    # exist in a vanilla config by definition, so checking them against one is meaningless:
+    # zzzLBDRCompPatch anchors on perkQualityJoe, which LBDR adds.
+    [string[]]$SkipConfig = @('zzzLBDRCompPatch')
 )
 $ErrorActionPreference = 'Stop'
 
@@ -33,70 +38,17 @@ if (-not $GameDir) {
 if (-not $GameDir) { throw 'Could not find the game. Pass -GameDir or set SDTD_GAMEDIR.' }
 if (-not (Test-GameDir $GameDir)) { throw "Assembly-CSharp.dll not found under GameDir '$GameDir'." }
 
-# Debug, Release, and the DLL that ships in the repo — whichever was built last. Taking them in
-# a fixed order silently verifies a stale bin\Debug left over from an older branch and reports
-# breaks that no longer exist, which is the same class of mistake this script exists to catch.
-if (-not $ModDll) {
-    $candidates = @(
-        "$PSScriptRoot\..\WeaponAffixesProject\bin\Debug\WeaponAffixesProject.dll",
-        "$PSScriptRoot\..\WeaponAffixesProject\bin\Release\WeaponAffixesProject.dll",
-        "$PSScriptRoot\..\..\zzRandomAffixesMod\WeaponAffixesProject.dll"
-    )
-    $ModDll = $candidates |
-        Where-Object { Test-Path -LiteralPath $_ -ErrorAction SilentlyContinue } |
-        Sort-Object { (Get-Item -LiteralPath $_).LastWriteTimeUtc } -Descending |
-        Select-Object -First 1
-}
-if (-not $ModDll) { throw 'No mod assembly found. Build the project or pass -ModDll.' }
+if (-not $RepoRoot) { $RepoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path }
 
 Write-Output "Game : $GameDir"
-Write-Output "Mod  : $ModDll"
 Add-Type -Path (Join-Path $GameDir 'Mods\0_TFP_Harmony\Mono.Cecil.dll')
 $resolver = [Mono.Cecil.DefaultAssemblyResolver]::new()
 $resolver.AddSearchDirectory((Join-Path $GameDir '7DaysToDie_Data\Managed'))
 $resolver.AddSearchDirectory((Join-Path $GameDir 'Mods\0_TFP_Harmony'))
-$resolver.AddSearchDirectory((Split-Path $ModDll))
 $reader = [Mono.Cecil.ReaderParameters]::new()
 $reader.AssemblyResolver = $resolver
-$mod = [Mono.Cecil.AssemblyDefinition]::ReadAssembly($ModDll, $reader)
 $game = [Mono.Cecil.AssemblyDefinition]::ReadAssembly((Join-Path $GameDir '7DaysToDie_Data\Managed\Assembly-CSharp.dll'), $reader)
 $failures = [Collections.Generic.List[string]]::new()
-
-# A removed type only shows up as an unresolved member if the mod happens to call something on
-# it. Used as a parameter, local or generic argument it resolves to nothing and goes unnoticed,
-# so check the type references in their own right.
-$typeCount = 0
-foreach ($type in $mod.MainModule.GetTypeReferences()) {
-    if ($null -eq $type.Scope -or $type.Scope.Name -ne 'Assembly-CSharp') { continue }
-    $typeCount++
-    try {
-        if ($null -eq $type.Resolve()) { $failures.Add("Unresolved type: $($type.FullName)") }
-    } catch { $failures.Add("Unresolved type: $($type.FullName) -- $_") }
-}
-Write-Output "Checked $typeCount compiled game type references."
-
-$count = 0
-foreach ($member in $mod.MainModule.GetMemberReferences()) {
-    if ($member.DeclaringType.Scope.Name -ne 'Assembly-CSharp') { continue }
-    $count++
-    $resolved = $null
-    try { $resolved = $member.Resolve() } catch { }
-    if ($null -ne $resolved) { continue }
-
-    # Call out the trap V3.3 sprang: a public field turned into a property. The source still
-    # compiles once rebuilt, so there is no build-time signal, and a shipped DLL built against
-    # the old version throws MissingFieldException at runtime instead.
-    $hint = ''
-    if ($member -is [Mono.Cecil.FieldReference]) {
-        $declaring = $null
-        try { $declaring = $member.DeclaringType.Resolve() } catch { }
-        if ($null -ne $declaring -and @($declaring.Properties | Where-Object Name -eq $member.Name).Count -gt 0) {
-            $hint = ' -- it is now a property, not a field; recompile against this version'
-        }
-    }
-    $failures.Add("Unresolved member: $member$hint")
-}
-Write-Output "Checked $count compiled game member references."
 
 # Harmony's injected parameters are not parameters of the target method.
 $injected = @('__instance', '__result', '__state', '__originalMethod', '__runOriginal', '__args', '__exception')
@@ -207,7 +159,149 @@ function Check-Type($type) {
 
     foreach ($nested in $type.NestedTypes) { Check-Type $nested }
 }
-foreach ($type in $mod.MainModule.Types) { Check-Type $type }
+function Check-Assembly($dllPath, $label) {
+    $resolver.AddSearchDirectory((Split-Path $dllPath))
+    $asm = [Mono.Cecil.AssemblyDefinition]::ReadAssembly($dllPath, $reader)
+
+    # A removed type only shows up as an unresolved member if the mod happens to call something
+    # on it. Used as a parameter, local or generic argument it resolves to nothing and goes
+    # unnoticed, so check the type references in their own right.
+    $typeCount = 0
+    foreach ($type in $asm.MainModule.GetTypeReferences()) {
+        if ($null -eq $type.Scope -or $type.Scope.Name -ne 'Assembly-CSharp') { continue }
+        $typeCount++
+        try {
+            if ($null -eq $type.Resolve()) { $failures.Add("[$label] Unresolved type: $($type.FullName)") }
+        } catch { $failures.Add("[$label] Unresolved type: $($type.FullName) -- $_") }
+    }
+
+    $memberCount = 0
+    foreach ($member in $asm.MainModule.GetMemberReferences()) {
+        if ($member.DeclaringType.Scope.Name -ne 'Assembly-CSharp') { continue }
+        $memberCount++
+        $resolved = $null
+        try { $resolved = $member.Resolve() } catch { }
+        if ($null -ne $resolved) { continue }
+
+        # Call out the trap V3.3 sprang: a public field turned into a property. The source still
+        # compiles once rebuilt, so there is no build-time signal, and a shipped DLL built
+        # against the old version throws MissingFieldException at runtime instead.
+        $hint = ''
+        if ($member -is [Mono.Cecil.FieldReference]) {
+            $declaring = $null
+            try { $declaring = $member.DeclaringType.Resolve() } catch { }
+            if ($null -ne $declaring -and @($declaring.Properties | Where-Object Name -eq $member.Name).Count -gt 0) {
+                $hint = ' -- it is now a property, not a field; recompile against this version'
+            }
+        }
+        $failures.Add("[$label] Unresolved member: $member$hint")
+    }
+
+    foreach ($type in $asm.MainModule.Types) { Check-Type $type }
+    Write-Output "  $label : $typeCount type ref(s), $memberCount member ref(s), Harmony targets."
+}
+
+# The ops this emulates. Anything else has its xpath checked but leaves the document unchanged,
+# which is reported rather than passed over -- a skipped op can cascade into later xpaths not
+# matching, and silence there reads as a broken mod instead of an incomplete emulator.
+$emulatedOps = @('append', 'remove', 'set', 'setattribute', 'insertBefore', 'insertAfter')
+
+function Check-ModConfig($configDir, $label) {
+    $patchCount = 0
+    $notEmulated = @{}
+    $configRoot = (Resolve-Path -LiteralPath $configDir).Path
+    foreach ($file in Get-ChildItem -LiteralPath $configDir -Recurse -Filter '*.xml') {
+        $relative = $file.FullName.Substring($configRoot.Length + 1)
+        $vanillaPath = Join-Path (Join-Path $GameDir 'Data\Config') $relative
+        # A mod is free to add a config file vanilla does not have; there is simply nothing to
+        # check its xpaths against.
+        if (!(Test-Path -LiteralPath $vanillaPath)) { continue }
+        $doc = [xml](Get-Content -LiteralPath $vanillaPath -Raw)
+        $patch = [xml](Get-Content -LiteralPath $file.FullName -Raw)
+        foreach ($op in $patch.DocumentElement.ChildNodes) {
+            if ($op.NodeType -ne [Xml.XmlNodeType]::Element -or !$op.HasAttribute('xpath')) { continue }
+            $patchCount++
+            $xpath = $op.GetAttribute('xpath')
+            $targets = @($doc.SelectNodes($xpath))
+            # LocalName, not Name: PowerShell's XML adapter resolves .Name to the value of an
+            # attribute called "name" when the element has one, so every <setattribute name="x">
+            # reported itself as "x" and matched no branch of the switch below -- meaning
+            # setattribute ops were silently never applied.
+            $opName = $op.LocalName
+            if ($targets.Count -eq 0) {
+                $failures.Add("[$label] Unmatched XML patch: $relative $opName $xpath")
+                continue
+            }
+            if ($emulatedOps -notcontains $opName) {
+                $notEmulated[$opName] = 1 + $notEmulated[$opName]
+                continue
+            }
+            foreach ($target in $targets) {
+                switch ($opName) {
+                    'append' { foreach ($child in $op.ChildNodes) { [void]$target.AppendChild($doc.ImportNode($child,$true)) } }
+                    'remove' { [void]$target.ParentNode.RemoveChild($target) }
+                    'set' { $target.InnerText = $op.InnerText }
+                    'setattribute' { $target.SetAttribute($op.GetAttribute('name'),$op.InnerText) }
+                    # Without these two, a mod that removes a node and reinserts a replacement
+                    # loses the replacement, and every later xpath into it reports unmatched.
+                    # AttributeLevels20 does exactly that with the five attributes.
+                    'insertBefore' {
+                        foreach ($child in $op.ChildNodes) {
+                            if ($child.NodeType -ne [Xml.XmlNodeType]::Element) { continue }
+                            [void]$target.ParentNode.InsertBefore($doc.ImportNode($child,$true), $target)
+                        }
+                    }
+                    'insertAfter' {
+                        $anchor = $target
+                        foreach ($child in $op.ChildNodes) {
+                            if ($child.NodeType -ne [Xml.XmlNodeType]::Element) { continue }
+                            $imported = $doc.ImportNode($child,$true)
+                            [void]$target.ParentNode.InsertAfter($imported, $anchor)
+                            $anchor = $imported
+                        }
+                    }
+                }
+            }
+        }
+    }
+    $note = ''
+    if ($notEmulated.Count -gt 0) {
+        $detail = ($notEmulated.GetEnumerator() | Sort-Object Name | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ', '
+        $note = "  (xpath checked, document not mutated: $detail)"
+    }
+    Write-Output "  $label : $patchCount xpath(s).$note"
+}
+
+# ---------------------------------------------------------------------------------------
+# What to check. An explicit -ModDll or -ModConfig checks just that; otherwise every mod in
+# the repo, because this repository holds eight of them and checking only RAM says nothing
+# about the other seven.
+# ---------------------------------------------------------------------------------------
+
+Write-Output ''
+if ($ModDll -or $ModConfig) {
+    if ($ModDll) { Check-Assembly $ModDll (Split-Path $ModDll -Leaf) }
+    if ($ModConfig) { Check-ModConfig $ModConfig (Split-Path (Split-Path $ModConfig -Parent) -Leaf) }
+} else {
+    $modFolders = @(Get-ChildItem -LiteralPath $RepoRoot -Directory |
+        Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'ModInfo.xml') })
+    Write-Output "Found $($modFolders.Count) mod(s) under $RepoRoot"
+    Write-Output ''
+    foreach ($folder in $modFolders) {
+        foreach ($dll in @(Get-ChildItem -LiteralPath $folder.FullName -Filter '*.dll' -Recurse -ErrorAction SilentlyContinue)) {
+            Check-Assembly $dll.FullName "$($folder.Name)/$($dll.Name)"
+        }
+        $cfg = Join-Path $folder.FullName 'Config'
+        if (Test-Path -LiteralPath $cfg) {
+            if ($SkipConfig -contains $folder.Name) {
+                Write-Output "  $($folder.Name) : config skipped (patches another mod, not vanilla)."
+            } else {
+                Check-ModConfig $cfg $folder.Name
+            }
+        }
+    }
+}
+
 # These runtime-selected targets cannot be checked through compiled member references.
 foreach ($pair in @(@('Equipment','SetSlotItem'),@('XUiC_ItemActionList','AddActionListEntry'))) {
     $type = $game.MainModule.Types | Where-Object Name -eq $pair[0]
@@ -215,31 +309,7 @@ foreach ($pair in @(@('Equipment','SetSlotItem'),@('XUiC_ItemActionList','AddAct
         $failures.Add("Missing runtime target: $($pair[0])::$($pair[1])")
     }
 }
-Write-Output 'Checked Harmony and runtime-selected targets.'
 
-$patchCount = 0
-foreach ($file in Get-ChildItem -LiteralPath $ModConfig -Recurse -Filter '*.xml') {
-    $relative = $file.FullName.Substring((Resolve-Path $ModConfig).Path.Length + 1)
-    $vanillaPath = Join-Path (Join-Path $GameDir 'Data\Config') $relative
-    if (!(Test-Path -LiteralPath $vanillaPath)) { $failures.Add("Missing vanilla XML: $relative"); continue }
-    $doc = [xml](Get-Content -LiteralPath $vanillaPath -Raw)
-    $patch = [xml](Get-Content -LiteralPath $file.FullName -Raw)
-    foreach ($op in $patch.DocumentElement.ChildNodes) {
-        if ($op.NodeType -ne [Xml.XmlNodeType]::Element -or !$op.HasAttribute('xpath')) { continue }
-        $patchCount++
-        $xpath = $op.GetAttribute('xpath')
-        $targets = @($doc.SelectNodes($xpath))
-        if ($targets.Count -eq 0) { $failures.Add("Unmatched XML patch: $relative $($op.Name) $xpath"); continue }
-        foreach ($target in $targets) {
-            switch ($op.Name) {
-                'append' { foreach ($child in $op.ChildNodes) { [void]$target.AppendChild($doc.ImportNode($child,$true)) } }
-                'remove' { [void]$target.ParentNode.RemoveChild($target) }
-                'set' { $target.InnerText = $op.InnerText }
-                'setattribute' { $target.SetAttribute($op.GetAttribute('name'),$op.InnerText) }
-            }
-        }
-    }
-}
-Write-Output "Checked $patchCount XML patch targets."
+Write-Output ''
 if ($failures.Count) { $failures | Write-Output; throw "$($failures.Count) compatibility checks failed." }
 Write-Output 'All compatibility checks passed.'

@@ -166,12 +166,12 @@ public class XUiC_CombineAffixStack : XUiC_ItemStack
             return null;
 
         ItemStack stack = useItemB ? grid.merge2.ItemStack : grid.merge1.ItemStack;
-        if (stack == null || stack.IsEmpty() || stack.itemValue == null || stack.itemValue.CosmeticMods == null)
+        if (stack == null || stack.IsEmpty() || stack.itemValue == null || stack.itemValue.cosmeticMods == null)
             return null;
-        if (affixSlot < 0 || affixSlot >= stack.itemValue.CosmeticMods.Length)
+        if (affixSlot < 0 || affixSlot >= stack.itemValue.cosmeticMods.Length)
             return null;
 
-        ItemValue mod = stack.itemValue.CosmeticMods[affixSlot];
+        ItemValue mod = stack.itemValue.cosmeticMods[affixSlot];
         if (mod == null || mod.IsEmpty() || !WeaponAffixesProject.AffixUtils.IsAffixMod(mod.ItemClass))
             return null;
 

@@ -138,12 +138,17 @@ public class XUiC_RamAffixBrowser : XUiController
                 for (int i = 0; i < tileEntities.Count; i++)
                 {
                     TileEntity tileEntity = tileEntities[i];
-                    if (tileEntity == null || !tileEntity.TryGetSelfOrFeature<ITileEntityLootable>(out ITileEntityLootable storage))
+                    // V3.3 replaced ITileEntityLootable with the TEFeatureStorage feature and
+                    // dropped bPlayerStorage, which has no equivalent: the game now recognises
+                    // player storage as "a composite tile entity carrying a storage feature"
+                    // and tracks placements by position. The land claim test below is what
+                    // actually scopes the scan to the player's own base.
+                    if (tileEntity == null || !tileEntity.TryGetSelfOrFeature<TEFeatureStorage>(out TEFeatureStorage storage))
                         continue;
-                    if (!storage.bPlayerStorage || storage.items == null)
+                    if (storage.ItemGrid?.items == null)
                         continue;
 
-                    Vector3i storagePos = storage.ToWorldPos();
+                    Vector3i storagePos = tileEntity.ToWorldPos();
                     int dx = storagePos.x - center.x;
                     int dz = storagePos.z - center.z;
                     if (dx * dx + dz * dz > radiusSquared)
@@ -152,7 +157,7 @@ public class XUiC_RamAffixBrowser : XUiController
                         continue;
 
                     containerCount++;
-                    CollectAffixes(storage.items);
+                    CollectAffixes(storage.ItemGrid.items);
                 }
             }
         }
@@ -453,8 +458,8 @@ public class XUiC_RamAffixBrowser : XUiController
                 continue;
 
             itemCount++;
-            CollectAffixes(stack.itemValue.CosmeticMods, stack, storedItems, i, true);
-            CollectAffixes(stack.itemValue.Modifications, stack, storedItems, i, false);
+            CollectAffixes(stack.itemValue.cosmeticMods, stack, storedItems, i, true);
+            CollectAffixes(stack.itemValue.modifications, stack, storedItems, i, false);
         }
     }
 

@@ -105,12 +105,12 @@ namespace WeaponAffixesProject
         private static List<int> GetMythicAffixSlots(ItemValue weapon)
         {
             List<int> slots = new List<int>();
-            if (weapon.CosmeticMods == null)
+            if (weapon.cosmeticMods == null)
                 return slots;
 
-            for (int i = 0; i < weapon.CosmeticMods.Length; i++)
+            for (int i = 0; i < weapon.cosmeticMods.Length; i++)
             {
-                ItemValue affix = weapon.CosmeticMods[i];
+                ItemValue affix = weapon.cosmeticMods[i];
                 if (affix?.ItemClass == null || !AffixUtils.IsAffixMod(affix.ItemClass))
                     continue;
                 if (AffixUtils.TryGetAffixTierIndex(affix.ItemClass.Name, out int tierIndex) &&
@@ -132,7 +132,7 @@ namespace WeaponAffixesProject
                 int affixSlot = mythicSlots[selectedListIndex];
                 mythicSlots.RemoveAt(selectedListIndex);
 
-                ItemClassModifier oldAffix = weapon.CosmeticMods[affixSlot].ItemClass as ItemClassModifier;
+                ItemClassModifier oldAffix = weapon.cosmeticMods[affixSlot].ItemClass as ItemClassModifier;
                 if (oldAffix == null)
                     continue;
 
@@ -146,7 +146,7 @@ namespace WeaponAffixesProject
                 if (oldAffix.Name.Contains("KillStreak"))
                     GameManager.Instance?.myEntityPlayerLocal?.Buffs?.RemoveBuff("buff" + oldAffix.Name);
 
-                weapon.CosmeticMods[affixSlot] = new ItemValue(godlikeAffix.Id);
+                weapon.SetCosmeticMod(affixSlot, new ItemValue(godlikeAffix.Id));
                 ascended++;
             }
 
@@ -170,7 +170,7 @@ namespace WeaponAffixesProject
 
             cosmeticGrid.AssembleWindow = assembleWindow;
             cosmeticGrid.CurrentItem = itemStack;
-            cosmeticGrid.SetParts(itemStack.itemValue.CosmeticMods);
+            cosmeticGrid.SetParts();
             assembleWindow.ItemStack = itemStack;
             assembleWindow.OnChanged();
         }

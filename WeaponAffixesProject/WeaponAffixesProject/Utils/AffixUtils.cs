@@ -546,9 +546,9 @@ internal static class AffixUtils
 		{
 			return instances;
 		}
-		if (item.CosmeticMods != null)
+		if (item.cosmeticMods != null)
 		{
-			ItemValue[] cosmeticMods = item.CosmeticMods;
+			ItemValue[] cosmeticMods = item.cosmeticMods;
 			foreach (ItemValue mod in cosmeticMods)
 			{
 				if (mod != null && !mod.IsEmpty() && IsAffixModWithKey(mod.ItemClass, tagName) && TryGetAffixTierIndex(mod.ItemClass.Name, out var tierIndex))
@@ -557,9 +557,9 @@ internal static class AffixUtils
 				}
 			}
 		}
-		if (item.Modifications != null)
+		if (item.modifications != null)
 		{
-			ItemValue[] modifications = item.Modifications;
+			ItemValue[] modifications = item.modifications;
 			foreach (ItemValue mod2 in modifications)
 			{
 				if (mod2 != null && !mod2.IsEmpty() && IsAffixModWithKey(mod2.ItemClass, tagName) && TryGetAffixTierIndex(mod2.ItemClass.Name, out var tierIndex2))
@@ -571,12 +571,31 @@ internal static class AffixUtils
 		return instances;
 	}
 
+	// V3.3 removed Equipment.GetItems(); the slots are read one at a time now.
+	internal static ItemValue[] GetEquippedItems(Equipment equipment)
+	{
+		if (equipment == null)
+		{
+			return null;
+		}
+		int slotCount = equipment.GetSlotCount();
+		ItemValue[] items = new ItemValue[slotCount];
+		for (int i = 0; i < slotCount; i++)
+		{
+			items[i] = equipment.GetSlotItem(i);
+		}
+		return items;
+	}
+
 	internal static List<int> GetAllAffixesFromArmor(EntityPlayer player, string tagName)
 	{
 		List<int> instances = new List<int>();
-		ItemValue[] allGear = player.equipment.GetItems();
-		ItemValue[] array = allGear;
-		foreach (ItemValue gear in array)
+		ItemValue[] allGear = GetEquippedItems(player?.equipment);
+		if (allGear == null)
+		{
+			return instances;
+		}
+		foreach (ItemValue gear in allGear)
 		{
 			instances.AddRange(GetAllAffixesFromItem(gear, tagName));
 		}

@@ -17,7 +17,7 @@ namespace WeaponAffixesProject
                 try
                 {
                     if (stack?.itemValue?.ItemClass == null ||
-                            stack?.itemValue.Modifications.Length == 0 ||
+                            stack?.itemValue.modifications.Length == 0 ||
                             stack?.itemValue.Quality == 0 ||
                             stack.itemValue.ItemClass.HasAnyTags(FastTags<TagGroup.Global>.GetTag("noMods")))
                         continue;
@@ -52,7 +52,7 @@ namespace WeaponAffixesProject
             var newCosmeticModsList = new ItemValue[count];
             for (int i = 0; i < count; i++)
                 newCosmeticModsList[i] = ItemClassModifier.GetItem(modsToApply[i]);
-            itemValue.CosmeticMods = newCosmeticModsList;
+            itemValue.SetCosmeticMods(newCosmeticModsList);
         }
 
         internal static void ApplyAffixMods(ItemValue itemValue, EntityPlayer player)
@@ -91,12 +91,12 @@ namespace WeaponAffixesProject
                     return;
 
                 // Find first empty cosmetic slot
-                for (int j = 0; j < itemValue.CosmeticMods.Length; j++)
+                for (int j = 0; j < itemValue.cosmeticMods.Length; j++)
                 {
-                    if (itemValue.CosmeticMods[j] == null || itemValue.CosmeticMods[j].IsEmpty())
+                    if (itemValue.cosmeticMods[j] == null || itemValue.cosmeticMods[j].IsEmpty())
                     {
                         // Install affix mod into cosmetic slot
-                        itemValue.CosmeticMods[j] = new ItemValue(selectedMod.Id);
+                        itemValue.SetCosmeticMod(j, new ItemValue(selectedMod.Id));
                         weaponMods = AffixUtils.RemoveSimilarMods(weaponMods, selectedMod);
                         break;
                     }
@@ -114,7 +114,7 @@ namespace WeaponAffixesProject
             }
 
             // Find some other way to determine the amount of affixes to apply
-            int affixSlots = itemValue.Modifications?.Length ?? 0;
+            int affixSlots = itemValue.modifications?.Length ?? 0;
             if (affixSlots <= 0)
                 affixSlots = 1;
             int maxAffixes = AffixUtils.GetEffectiveMaxAffixes(player);
@@ -127,9 +127,9 @@ namespace WeaponAffixesProject
 
             // Count existing affixes
             int currentAffixes = 0;
-            if (itemValue.CosmeticMods != null)
+            if (itemValue.cosmeticMods != null)
             {
-                foreach (var mod in itemValue.CosmeticMods)
+                foreach (var mod in itemValue.cosmeticMods)
                     if (mod?.ItemClass != null && AffixUtils.IsAffixMod(mod.ItemClass)) currentAffixes++;
             }
 
@@ -137,12 +137,9 @@ namespace WeaponAffixesProject
             int abundanceLimitedAffixes = RollAffixAbundance(missingAffixes, maxAffixes - currentAffixes);
             int targetSlots = currentAffixes + abundanceLimitedAffixes;
 
-            if (targetSlots > 0 && (itemValue.CosmeticMods == null || itemValue.CosmeticMods.Length < targetSlots))
+            if (targetSlots > 0 && (itemValue.cosmeticMods == null || itemValue.cosmeticMods.Length < targetSlots))
             {
-                var newCosmetic = new ItemValue[targetSlots];
-                if (itemValue.CosmeticMods != null)
-                    Array.Copy(itemValue.CosmeticMods, newCosmetic, itemValue.CosmeticMods.Length);
-                itemValue.CosmeticMods = newCosmetic;
+                itemValue.ResizeCosmeticMods(targetSlots);
             }
 
             return abundanceLimitedAffixes;
@@ -184,14 +181,14 @@ namespace WeaponAffixesProject
                 Log.Out("No upgrade slots available while trying to upgrade.");
                 return false;
             }
-            if (itemValue.CosmeticMods.Length == 0)
+            if (itemValue.cosmeticMods.Length == 0)
             {
                 Log.Out("No affixes installed to upgrade");
                 return false;
             }
 
             int randomIndex = canUpgradeSlots[AffixUtils.rng.Next(canUpgradeSlots.Count)];
-            ItemClassModifier oldAffix = itemValue.CosmeticMods[randomIndex].ItemClass as ItemClassModifier;
+            ItemClassModifier oldAffix = itemValue.cosmeticMods[randomIndex].ItemClass as ItemClassModifier;
             if (oldAffix == null || !AffixUtils.TryGetAffixTierIndex(oldAffix.Name, out int oldTierIndex))
                 return false;
 
@@ -207,7 +204,7 @@ namespace WeaponAffixesProject
             if (oldAffix.Name.Contains("KillStreak")) GameManager.Instance.myEntityPlayerLocal.Buffs.RemoveBuff("buff" + oldAffix.Name);
 
             // then apply the upgrade
-            itemValue.CosmeticMods[randomIndex] = new ItemValue(newAffix.Id);
+            itemValue.SetCosmeticMod(randomIndex, new ItemValue(newAffix.Id));
 
             // Upgrade an affix
             AffixUtils.ApplyQuestEventManagerUseItem("affixModEntityDamagePerc2");
@@ -230,31 +227,27 @@ namespace WeaponAffixesProject
             if (!AffixUtils.HasAnyMods(modList)) return false;
 
             int maxAffixes = AffixUtils.GetEffectiveMaxAffixes(player);
-            if (itemValue.CosmeticMods != null && itemValue.CosmeticMods.Length >= maxAffixes)
+            if (itemValue.cosmeticMods != null && itemValue.cosmeticMods.Length >= maxAffixes)
                 return false;
 
-            if (itemValue.CosmeticMods == null || itemValue.CosmeticMods.Length == 0)
+            if (itemValue.cosmeticMods == null || itemValue.cosmeticMods.Length == 0)
             {
-                var newCosmetics = new ItemValue[1];
-                itemValue.CosmeticMods = newCosmetics;
+                itemValue.ResizeCosmeticMods(1);
             }
 
-            if (itemValue.CosmeticMods[0] != null && !itemValue.CosmeticMods[0].IsEmpty())
+            if (itemValue.cosmeticMods[0] != null && !itemValue.cosmeticMods[0].IsEmpty())
             {
-                for (int i = 0; i < itemValue.CosmeticMods.Length; i++)
+                for (int i = 0; i < itemValue.cosmeticMods.Length; i++)
                 {
-                    if (itemValue.CosmeticMods[i] == null || itemValue.CosmeticMods[i].IsEmpty()) continue;
-                    ItemClassModifier mod = itemValue.CosmeticMods[i].ItemClass as ItemClassModifier;
+                    if (itemValue.cosmeticMods[i] == null || itemValue.cosmeticMods[i].IsEmpty()) continue;
+                    ItemClassModifier mod = itemValue.cosmeticMods[i].ItemClass as ItemClassModifier;
                     modList = AffixUtils.RemoveSimilarMods(modList, mod);
                 }
 
-                int affixSlots = itemValue.CosmeticMods.Length + 1;
+                int affixSlots = itemValue.cosmeticMods.Length + 1;
                 if (affixSlots > maxAffixes)
                     return false;
-                var newCosmetic = new ItemValue[affixSlots];
-                if (itemValue.CosmeticMods != null && !itemValue.CosmeticMods[0].IsEmpty())
-                    Array.Copy(itemValue.CosmeticMods, newCosmetic, itemValue.CosmeticMods.Length);
-                itemValue.CosmeticMods = newCosmetic;
+                itemValue.ResizeCosmeticMods(affixSlots);
             }
             int tier = (fromToken && AffixUtils.rng.Next(100) < 2) ? 5 : 0;
             if (!AffixUtils.TrySelectAffixMod(modList, tier, out ItemClassModifier selectedMod))
@@ -263,15 +256,15 @@ namespace WeaponAffixesProject
             affixName = selectedMod.localizedName;
 
             // Find first empty cosmetic slot
-            for (int j = 0; j < itemValue.CosmeticMods.Length; j++)
+            for (int j = 0; j < itemValue.cosmeticMods.Length; j++)
             {
-                if (itemValue.CosmeticMods[j] == null ||
-                        itemValue.CosmeticMods[j].IsEmpty() ||
-                        itemValue.CosmeticMods[j].ItemClass.HasAnyTags(FastTags<TagGroup.Global>.GetTag("dye"))
+                if (itemValue.cosmeticMods[j] == null ||
+                        itemValue.cosmeticMods[j].IsEmpty() ||
+                        itemValue.cosmeticMods[j].ItemClass.HasAnyTags(FastTags<TagGroup.Global>.GetTag("dye"))
                    )
                 {
                     // Install affix mod into cosmetic slot
-                    itemValue.CosmeticMods[j] = new ItemValue(selectedMod.Id);
+                    itemValue.SetCosmeticMod(j, new ItemValue(selectedMod.Id));
 
                     // Unlock an affix
                     if (!fromToken)
@@ -288,14 +281,14 @@ namespace WeaponAffixesProject
             maxUpgrade = Math.Min(maxUpgrade, AffixUtils.MaxNormallyObtainableAffixTier);
 
             bool didUpgrade = false;
-            if (itemValue.CosmeticMods == null || itemValue.CosmeticMods.Length == 0)
+            if (itemValue.cosmeticMods == null || itemValue.cosmeticMods.Length == 0)
                 return totalAffixes > 0 && AffixSystem.AddNewAffix(itemValue, ref affixName, false, player);
 
             // If an empty slot is available, unlock a new one.
-            if (itemValue.CosmeticMods.Length < totalAffixes)
+            if (itemValue.cosmeticMods.Length < totalAffixes)
             {
-                if (itemValue.CosmeticMods[0] == null || itemValue.CosmeticMods[0].IsEmpty()) didUpgrade = AffixSystem.AddNewAffix(itemValue, ref affixName, false, player);
-                else if (!AffixUtils.IsAffixMod(itemValue.CosmeticMods[0].ItemClass)) didUpgrade = AffixSystem.AddNewAffix(itemValue, ref affixName, false, player);
+                if (itemValue.cosmeticMods[0] == null || itemValue.cosmeticMods[0].IsEmpty()) didUpgrade = AffixSystem.AddNewAffix(itemValue, ref affixName, false, player);
+                else if (!AffixUtils.IsAffixMod(itemValue.cosmeticMods[0].ItemClass)) didUpgrade = AffixSystem.AddNewAffix(itemValue, ref affixName, false, player);
                 else if (AffixUtils.rng.Next(0, 100) > AffixUtils.unlockNewAffixChance) didUpgrade = AffixSystem.AddNewAffix(itemValue, ref affixName, false, player);
             }
             if (!didUpgrade)
@@ -303,19 +296,19 @@ namespace WeaponAffixesProject
                 // Otherwise upgrade an existing affix.
                 // Check if all affixes are max rarity
                 List<int> canUpgradeSlots = new List<int>();
-                for (int i = 0; i < itemValue.CosmeticMods.Length; i++)
+                for (int i = 0; i < itemValue.cosmeticMods.Length; i++)
                 {
-                    if (itemValue.CosmeticMods[i]?.ItemClass == null || !AffixUtils.IsAffixMod(itemValue.CosmeticMods[i].ItemClass))
+                    if (itemValue.cosmeticMods[i]?.ItemClass == null || !AffixUtils.IsAffixMod(itemValue.cosmeticMods[i].ItemClass))
                         continue;
 
-                    if (AffixUtils.TryGetAffixTierIndex(itemValue.CosmeticMods[i].ItemClass.Name, out int tierIndex) && tierIndex + 1 < maxUpgrade)
+                    if (AffixUtils.TryGetAffixTierIndex(itemValue.cosmeticMods[i].ItemClass.Name, out int tierIndex) && tierIndex + 1 < maxUpgrade)
                         canUpgradeSlots.Add(i);
                 }
 
                 // If no slots can be upgraded, see if you can add a new one instead.
                 if (canUpgradeSlots.Count == 0)
                 {
-                    if (itemValue.CosmeticMods.Length < totalAffixes) didUpgrade = AffixSystem.AddNewAffix(itemValue, ref affixName, false, player);
+                    if (itemValue.cosmeticMods.Length < totalAffixes) didUpgrade = AffixSystem.AddNewAffix(itemValue, ref affixName, false, player);
                     else return didUpgrade;
                 }
                 else didUpgrade = AffixSystem.UpgradeAffix(itemValue, canUpgradeSlots, ref affixName);

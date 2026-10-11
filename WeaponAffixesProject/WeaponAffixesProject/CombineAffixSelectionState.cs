@@ -69,7 +69,7 @@ internal static class CombineAffixSelectionState
 		bool[] selectedFromB = GetArray(SelectedFromItemB, group);
 		for (int i = 0; i < maxAffixes; i++)
 		{
-			ItemValue[] sourceMods = ((!explicitSelection[i] || !selectedFromB[i] || IsGodlikeAffixAt(itemB?.CosmeticMods, i)) ? itemA?.CosmeticMods : itemB?.CosmeticMods);
+			ItemValue[] sourceMods = ((!explicitSelection[i] || !selectedFromB[i] || IsGodlikeAffixAt(itemB?.cosmeticMods, i)) ? itemA?.cosmeticMods : itemB?.cosmeticMods);
 			ItemValue affix = CloneAffixAt(sourceMods, i);
 			if (!affix.IsEmpty())
 			{
@@ -91,7 +91,7 @@ internal static class CombineAffixSelectionState
 
 	private static int CountSelectedAffixesFromItemB(XUiC_CombineWindowGroup group, ItemValue itemB, int? requiredTier)
 	{
-		if (group == null || itemB?.CosmeticMods == null)
+		if (group == null || itemB?.cosmeticMods == null)
 		{
 			return 0;
 		}
@@ -101,7 +101,7 @@ internal static class CombineAffixSelectionState
 		int count = 0;
 		for (int i = 0; i < maxAffixes; i++)
 		{
-			if (explicitSelection[i] && selectedFromB[i] && i < itemB.CosmeticMods.Length && itemB.CosmeticMods[i] != null && !itemB.CosmeticMods[i].IsEmpty() && !IsGodlikeAffixAt(itemB.CosmeticMods, i) && (!requiredTier.HasValue || (AffixUtils.TryGetAffixTierIndex(itemB.CosmeticMods[i].ItemClass?.Name, out var tierIndex) && tierIndex + 1 == requiredTier.Value)))
+			if (explicitSelection[i] && selectedFromB[i] && i < itemB.cosmeticMods.Length && itemB.cosmeticMods[i] != null && !itemB.cosmeticMods[i].IsEmpty() && !IsGodlikeAffixAt(itemB.cosmeticMods, i) && (!requiredTier.HasValue || (AffixUtils.TryGetAffixTierIndex(itemB.cosmeticMods[i].ItemClass?.Name, out var tierIndex) && tierIndex + 1 == requiredTier.Value)))
 			{
 				count++;
 			}

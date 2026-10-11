@@ -14,6 +14,19 @@ game update surfaces the break here instead, and reports:
 Patch classes that pick their targets at runtime (TargetMethod / TargetMethods) cannot be
 resolved statically and are listed as "manual" for review.
 
+It then resolves every game type, field and method the assembly references. Patch targets are
+only the part of the game RAM hooks; the much larger surface is the API it calls, and a rename
+there breaks the mod just as hard while leaving every patch target intact. V3.3 turned
+ItemStack.itemValue from a field into a property, which left the targets resolving perfectly
+and threw MissingFieldException on every crafting window refresh. This pass reports:
+
+  * game types the assembly references that no longer exist
+  * fields and methods that no longer resolve, including a field that became a property
+    and a method whose signature changed
+
+Run it against the DLL that ships, not just a fresh build: a stale shipped DLL against a new
+game version is the failure this is meant to catch.
+
 .EXAMPLE
 pwsh tools/Verify-HarmonyTargets.ps1
 pwsh tools/Verify-HarmonyTargets.ps1 -ModAssembly path\to\Mod.dll -GameDir "D:\...\7 Days To Die"
@@ -49,8 +62,16 @@ Write-Host "Game : $gameAsmPath"
 Write-Host "Mod  : $ModAssembly`n"
 
 $game = [Mono.Cecil.AssemblyDefinition]::ReadAssembly($gameAsmPath)
-$mod  = [Mono.Cecil.AssemblyDefinition]::ReadAssembly($ModAssembly)
 $gameModule = $game.MainModule
+
+# Resolving the mod's references needs somewhere to find the assemblies it was built
+# against; without the game's Managed directory every Resolve() comes back null.
+$resolver = New-Object Mono.Cecil.DefaultAssemblyResolver
+$resolver.AddSearchDirectory((Join-Path $GameDir '7DaysToDie_Data\Managed'))
+$resolver.AddSearchDirectory((Join-Path $GameDir 'Mods\0_TFP_Harmony'))
+$readerParams = New-Object Mono.Cecil.ReaderParameters
+$readerParams.AssemblyResolver = $resolver
+$mod = [Mono.Cecil.AssemblyDefinition]::ReadAssembly($ModAssembly, $readerParams)
 
 # Harmony's injected parameters are not parameters of the target method.
 $injected = @('__instance', '__result', '__state', '__originalMethod', '__runOriginal', '__args', '__exception')
@@ -154,7 +175,61 @@ foreach ($type in $allTypes) {
     }
 }
 
+# ---------------------------------------------------------------------------------------
+# Every game type, field and method the assembly references.
+# ---------------------------------------------------------------------------------------
+
+$gameAsmName = [System.IO.Path]::GetFileNameWithoutExtension($gameAsmPath)
+
+function Test-IsGameScoped($typeRef) {
+    # TypeReference.Scope walks out to the declaring type for nested types, so this
+    # answers "was this type declared in Assembly-CSharp" for nested types too.
+    if (-not $typeRef) { return $false }
+    $scope = $typeRef.Scope
+    if (-not $scope) { return $false }
+    return $scope.Name -eq $gameAsmName
+}
+
+$typesChecked = 0
+foreach ($tr in $mod.MainModule.GetTypeReferences()) {
+    if (-not (Test-IsGameScoped $tr)) { continue }
+    $typesChecked++
+    $resolved = $null
+    try { $resolved = $tr.Resolve() } catch { $resolved = $null }
+    if (-not $resolved) {
+        $problems.Add("MISSING TYPE   $($tr.FullName) - referenced by the mod, not in $gameAsmName") | Out-Null
+    }
+}
+
+$membersChecked = 0
+foreach ($mr in $mod.MainModule.GetMemberReferences()) {
+    if (-not (Test-IsGameScoped $mr.DeclaringType)) { continue }
+    # A reference to a type that is itself gone is already reported above; resolving its
+    # members would just repeat that one break once per member.
+    $declResolved = $null
+    try { $declResolved = $mr.DeclaringType.Resolve() } catch { $declResolved = $null }
+    if (-not $declResolved) { continue }
+
+    $membersChecked++
+    $resolved = $null
+    try { $resolved = $mr.Resolve() } catch { $resolved = $null }
+    if ($resolved) { continue }
+
+    $kind = if ($mr -is [Mono.Cecil.FieldReference]) { 'FIELD' } else { 'METHOD' }
+    $detail = ''
+    if ($kind -eq 'FIELD') {
+        # The specific trap: a public field that turned into a property. Old IL does a
+        # direct field load and throws MissingFieldException at runtime.
+        $asProperty = @($declResolved.Properties | Where-Object { $_.Name -eq $mr.Name })
+        if ($asProperty.Count -gt 0) {
+            $detail = " - it is now a property, not a field; recompile against this version"
+        }
+    }
+    $problems.Add("MISSING $kind  $($mr.DeclaringType.FullName).$($mr.Name)$detail") | Out-Null
+}
+
 Write-Host "Statically resolved $checked patch method(s)." -ForegroundColor Cyan
+Write-Host "Resolved $typesChecked game type reference(s) and $membersChecked member reference(s)." -ForegroundColor Cyan
 if ($manual.Count -gt 0) {
     Write-Host "`nNeeds manual review:" -ForegroundColor Yellow
     $manual | ForEach-Object { Write-Host "  $_" -ForegroundColor Yellow }
@@ -164,5 +239,5 @@ if ($problems.Count -gt 0) {
     $problems | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
     exit 1
 }
-Write-Host "`nAll statically resolvable Harmony targets exist." -ForegroundColor Green
+Write-Host "`nAll statically resolvable Harmony targets and game API references exist." -ForegroundColor Green
 exit 0

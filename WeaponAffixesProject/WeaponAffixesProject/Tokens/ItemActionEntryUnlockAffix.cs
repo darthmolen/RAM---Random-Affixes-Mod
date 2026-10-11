@@ -61,10 +61,10 @@ public class ItemActionEntryUnlockAffix : BaseItemActionEntry
 		if (count > 0 && count2 > 9)
 		{
 			string newAffix = "";
-			int mythicAffixesBefore = AffixUtils.CountAffixesAtTier(item.itemStack.itemValue.CosmeticMods, 6);
+			int mythicAffixesBefore = AffixUtils.CountAffixesAtTier(item.itemStack.itemValue.cosmeticMods, 6);
 			if (UnlockAffix(ref item.itemStack, ref newAffix))
 			{
-				bool unlockedMythic = AffixUtils.CountAffixesAtTier(item.itemStack.itemValue.CosmeticMods, 6) > mythicAffixesBefore;
+				bool unlockedMythic = AffixUtils.CountAffixesAtTier(item.itemStack.itemValue.cosmeticMods, 6) > mythicAffixesBefore;
 				item.ForceRefreshItemStack();
 				XUiController assembleWg = xui.FindWindowGroupByName("assemble");
 				if (assembleWg != null)
@@ -75,7 +75,7 @@ public class ItemActionEntryUnlockAffix : BaseItemActionEntry
 					{
 						cosmeticGrid.AssembleWindow = assembleWindow;
 						cosmeticGrid.CurrentItem = item.itemStack;
-						cosmeticGrid.SetParts(item.itemStack.itemValue.CosmeticMods);
+						cosmeticGrid.SetParts();
 						assembleWindow.ItemStack = item.itemStack;
 						assembleWindow.OnChanged();
 					}
@@ -128,7 +128,7 @@ public class ItemActionEntryUnlockAffix : BaseItemActionEntry
 	public static bool UnlockAffix(ref ItemStack itemStack, ref string newAffix)
 	{
 		EntityPlayerLocal player = GameManager.Instance?.myEntityPlayerLocal;
-		ItemValue[] cosmeticMods = itemStack.itemValue.CosmeticMods;
+		ItemValue[] cosmeticMods = itemStack.itemValue.cosmeticMods;
 		int currentSlots = ((cosmeticMods != null) ? cosmeticMods.Length : 0);
 		if (currentSlots >= AffixUtils.GetEffectiveMaxAffixes(player))
 		{

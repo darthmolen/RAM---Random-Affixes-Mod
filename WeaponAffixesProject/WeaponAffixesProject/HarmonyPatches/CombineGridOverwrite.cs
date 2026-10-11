@@ -27,10 +27,10 @@ namespace WeaponAffixesProject.HarmonyPatches
 
                 ItemStack itemStack = __instance.merge1.ItemStack.Clone();
                 itemStack.itemValue.MergeBest(__instance.merge2.ItemStack.itemValue);
-                itemStack.itemValue.CosmeticMods = CombineAffixSelectionState.BuildResultAffixes(
+                itemStack.itemValue.SetCosmeticMods(CombineAffixSelectionState.BuildResultAffixes(
                     __instance.GetParentByType<XUiC_CombineWindowGroup>(),
                     itemValue,
-                    itemValue2);
+                    itemValue2));
 
                 itemStack.itemValue.Meta = 0;
                 __instance.SetResult(itemStack);

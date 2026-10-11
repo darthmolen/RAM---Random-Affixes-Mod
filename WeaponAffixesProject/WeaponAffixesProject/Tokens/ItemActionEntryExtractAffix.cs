@@ -74,7 +74,7 @@ public class ItemActionEntryExtractAffix : BaseItemActionEntry
 				{
 					cosmeticGrid.AssembleWindow = assembleWindow;
 					cosmeticGrid.CurrentItem = parentItemStack;
-					cosmeticGrid.SetParts(parentItemStack.itemValue.CosmeticMods);
+					cosmeticGrid.SetParts();
 					assembleWindow.ItemStack = parentItemStack;
 					assembleWindow.OnChanged();
 				}
@@ -101,17 +101,17 @@ public class ItemActionEntryExtractAffix : BaseItemActionEntry
 		affix.HandleMoveToPreferredLocation();
 		if (affix is XUiC_ItemCosmeticStack)
 		{
-			ItemValue[] newCosmeticModsList = new ItemValue[parentItem.itemValue.CosmeticMods.Length - 1];
+			ItemValue[] newCosmeticModsList = new ItemValue[parentItem.itemValue.cosmeticMods.Length - 1];
 			int j = 0;
-			for (int i = 0; i < parentItem.itemValue.CosmeticMods.Length; i++)
+			for (int i = 0; i < parentItem.itemValue.cosmeticMods.Length; i++)
 			{
-				if (parentItem.itemValue.CosmeticMods[i] != null && !parentItem.itemValue.CosmeticMods[i].IsEmpty())
+				if (parentItem.itemValue.cosmeticMods[i] != null && !parentItem.itemValue.cosmeticMods[i].IsEmpty())
 				{
-					newCosmeticModsList[j] = parentItem.itemValue.CosmeticMods[i];
+					newCosmeticModsList[j] = parentItem.itemValue.cosmeticMods[i];
 					j++;
 				}
 			}
-			parentItem.itemValue.CosmeticMods = newCosmeticModsList;
+			parentItem.itemValue.SetCosmeticMods(newCosmeticModsList);
 		}
 		return true;
 	}
